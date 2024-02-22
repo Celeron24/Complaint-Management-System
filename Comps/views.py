@@ -26,7 +26,3 @@ def logout_user(request):
     logout(request)
     messages.success("You have successfully logged out")
     return redirect('login')
-
-def signup(request):
-    if request.methods == "POST":
-        form = SignUpForm(request.POST)
