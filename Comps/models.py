@@ -13,7 +13,7 @@ class Complaint(models.Model):
     Description = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
-    # Ip address and computer name, username.
+    # Ip address and computer name, username some changes 
 
     def __str__(self):
         return self.Subject
