@@ -1,0 +1,5 @@
+    /* for side by side radio buttons home */
+    .radio-inline label {
+        display: inline-block;
+        margin-right: 10px; /* Adjust spacing as needed */
+}

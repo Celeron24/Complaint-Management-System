@@ -7,9 +7,13 @@ class Complaint(models.Model):
         ('Assignment', 'Assignment'),
     ]
 
-    Comp_Assign = models.CharField(max_length=50)
+    Complaint_type_choice = [
+        ('E-office', 'E-office'),
+        ('Printer', 'Printer'),
+    ]
+    Comp_Assign = models.CharField(max_length=50, choices=COMP_ASSIGN_CHOICES, default=1)
     Subject = models.CharField(max_length=200)
-    complaint_type = models.CharField(max_length=50)
+    complaint_type = models.CharField(max_length=50, choices=Complaint_type_choice, default=0)
     Description = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 

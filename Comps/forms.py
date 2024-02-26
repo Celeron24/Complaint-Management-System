@@ -11,6 +11,14 @@ class CustomUserCreationForm(UserCreationForm):
 class ComplaintForm(forms.ModelForm):
     class Meta:
         model = Complaint
-        fields = ['comp_assign', 'subject', 'complaint_type', 'Description']
-        widgets = {'comp_assign': forms.RadioSelect,
-                   }
+        fields = ['Comp_Assign', 'complaint_type', 'Subject',  'Description']
+        widgets = {
+            'Comp_Assign': forms.RadioSelect(attrs={'class': 'form', 'checked': 'checked'}),
+            'complaint_type': forms.Select(attrs={'class': 'form-control'}),
+            'Subject': forms.TextInput(attrs={'class': 'form-control'}),
+            'Description': forms.Textarea(attrs={'class': 'form-control'}),
+            }
+        labels = {
+            'Comp_Assign': 'Is It a complaint or an option',
+            'complaint_type': 'Type of Complaint',
+        }
