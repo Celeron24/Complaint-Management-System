@@ -1,10 +1,16 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
+from Comps.forms import ComplaintForm
 
 
 def home(request):
-    return render(request, "home.html")
+    form = ComplaintForm()
+    if request.method == 'POST':
+        form = ComplaintForm(request.POST)
+        if form.is_valid():
+            pass
+    return render(request, "home.html", {'form': form})
 
 
 def login_user(request):

@@ -1,6 +1,19 @@
 {% extends 'base.html' %}
 
+{#<link href="{% static "ComplaintMS/css/simple-sidebar.css" %}" rel="stylesheet">#}
 
 {% block content %}
     <h1>Complaint Management System</h1>
+<!-- your_template.html -->
+    <div class="container">
+<form method="post" action="{% url 'home' %}">
+    {% csrf_token %}
+    {{ form.as_div }}
+    {{ form.subject }}
+    {{ form.description }}
+{#    <input type="submit" value="Submit">#}
+{#    <button type="button" class="btn btn-secondary">Secondary</button>#}
+</form>
+    </div>
+
 {% endblock %}
