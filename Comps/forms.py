@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from Comps.models import Complaint
+from .models import ComplaintType
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -12,6 +13,7 @@ class ComplaintForm(forms.ModelForm):
     class Meta:
         model = Complaint
         fields = ['Comp_Assign', 'complaint_type', 'Subject',  'Description']
+        complaint_type = forms.ModelChoiceField(queryset=ComplaintType.objects.all(), empty_label=None)
         widgets = {
             'Comp_Assign': forms.RadioSelect(attrs={'class': 'form', 'checked': 'checked'}),
             'complaint_type': forms.Select(attrs={'class': 'form-control'}),

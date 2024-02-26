@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
 from Comps.forms import CustomUserCreationForm
+from .models import ComplaintType
 
 
 class CustomUserAdmin(UserAdmin):
@@ -18,3 +19,4 @@ class CustomUserAdmin(UserAdmin):
 admin.site.unregister(User)
 # Register UserAdmin with the custom form
 admin.site.register(User, CustomUserAdmin)
+admin.site.register(ComplaintType)
