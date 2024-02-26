@@ -2,4 +2,15 @@
     .radio-inline label {
         display: inline-block;
         margin-right: 10px; /* Adjust spacing as needed */
-}
+    }
+   h1 {
+            text-align: center;
+        }
+    /*.btn {*/
+    /*        padding: 10px 20px;*/
+    /*        font-size: 16px;*/
+    /*}*/
+
+     /*input {*/
+     /*       margin-bottom: 20px; !* Add some space between h1 and input *!*/
+     /*   }*/

@@ -17,8 +17,8 @@ class ComplaintForm(forms.ModelForm):
         widgets = {
             'Comp_Assign': forms.RadioSelect(attrs={'class': 'form', 'checked': 'checked'}),
             'complaint_type': forms.Select(attrs={'class': 'form-control'}),
-            'Subject': forms.TextInput(attrs={'class': 'form-control'}),
-            'Description': forms.Textarea(attrs={'class': 'form-control'}),
+            'Subject': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Write the subject here'}),
+            'Description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Comment here'}),
             }
         labels = {
             'Comp_Assign': 'Is It a complaint or an option',
