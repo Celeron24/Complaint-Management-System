@@ -12,15 +12,30 @@ class CustomUserCreationForm(UserCreationForm):
 class ComplaintForm(forms.ModelForm):
     class Meta:
         model = Complaint
-        fields = ['Comp_Assign', 'complaint_type', 'Subject',  'Description']
+        fields = ['Comp_Assign', 'complaint_type', 'Subject', 'Description']
         complaint_type = forms.ModelChoiceField(queryset=ComplaintType.objects.all(), empty_label=None)
         widgets = {
-            'Comp_Assign': forms.RadioSelect(attrs={'class': 'form', 'checked': 'checked'}),
+            'Comp_Assign': forms.RadioSelect(attrs={'class': 'form', 'checked': 'checked',
+                                                    'style': 'margin-bottom: 10px;'}),
+
             'complaint_type': forms.Select(attrs={'class': 'form-control'}),
-            'Subject': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Write the subject here'}),
-            'Description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Comment here'}),
-            }
+
+            'Subject': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Write the subject here',
+                                              'style': 'margin-bottom: 10px;'}),
+
+            'Description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Comment here',
+                                                 'style': 'margin-bottom: 10px;'}),
+        }
+
         labels = {
-            'Comp_Assign': 'Is It a complaint or an option',
+            'Comp_Assign': 'Choose Type:',
+            'Subject': 'Subject (Max 50 character):',
             'complaint_type': 'Type of Complaint',
         }
+
+    def __init__(self, *args, **kwargs):
+        super(ComplaintForm, self).__init__(*args, **kwargs)
+        self.fields['Comp_Assign'].required = False
+        self.fields['complaint_type'].required = False
+        self.fields['Subject'].required = False
+        self.fields['Description'].required = False

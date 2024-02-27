@@ -15,7 +15,7 @@ class Complaint(models.Model):
     ]
 
     Comp_Assign = models.CharField(max_length=50, choices=COMP_ASSIGN_CHOICES, default=None)
-    Subject = models.CharField(max_length=200)
+    Subject = models.CharField(max_length=50)
     complaint_type = models.ForeignKey(ComplaintType, on_delete=models.CASCADE)
     Description = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
