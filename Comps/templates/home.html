@@ -1,6 +1,30 @@
 {% extends 'base.html' %}
-
-{#<link href="{% static "ComplaintMS/css/simple-sidebar.css" %}" rel="stylesheet">#}
-
 {% block content %}
+
+<!-- Header-->
+        <header class="bg-dark py-1">
+            <div class="container px-4 px-lg-5 my-5">
+                <div class="text-center text-white">
+                    <h1 class="display-4 fw-bolder">Complaints</h1>
+                    <p class="lead fw-normal text-white-50 mb-0">Your complaints Below</p>
+                </div>
+            </div>
+        </header>
+
+        <div class="container">
+        	<div class="row">
+        		<center>
+        			<div class="col-8">
+        				<br/><br/>
+
+                        {% for complaint in complaints %}
+                     <li>  {{ complaint }} </li>
+
+                        {% endfor %}
+<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+        			</div>
+        		</center>
+        	</div>
+        </div>
+
 {% endblock %}

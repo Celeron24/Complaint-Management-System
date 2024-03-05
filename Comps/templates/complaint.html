@@ -3,16 +3,21 @@
 {#<link href="{% static "ComplaintMS/css/simple-sidebar.css" %}" rel="stylesheet">#}
 
 {% block content %}
-<!-- your_template.html -->
+    <!-- your_template.html -->
     <div class="container">
-    <h1> Register Your Complaint</h1>
-<form method="post" action="{% url 'home' %}">
-    {% csrf_token %}
-    {{ form.as_div }}
-    {{ form.subject }}
-    {{ form.description }}
-   <div id="ctr"><button type="submit" class="btn btn-secondary">Submit</button></div>
-</form>
+        &nbsp;
+        {% if user.is_authenticated %}
+            <h1> Register Your Complaint</h1>
+            <form method="post" action="{% url 'home' %}">
+                {% csrf_token %}
+                {{ form.as_div }}
+                {{ form.subject }}
+                {{ form.description }}
+                <div id="ctr"><button type="submit" class="btn btn-secondary">Submit</button></div>
+            </form>
+        {% else %}
+            <h1>Login First</h1>
+        {% endif %}
     </div>
 
 {% endblock %}

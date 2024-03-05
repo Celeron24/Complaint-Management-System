@@ -25,3 +25,11 @@
         justify-content: center; align-items: center; height: 10vh;
     }
 
+    .center-container {
+            text-align: center;
+    }
+
+    .centered-button {
+
+            /* Additional styles for the button if needed */
+    }
