@@ -75,3 +75,7 @@ def solvedcomplaints(request):
     else:
         messages.error(request, "You have to Login First")
         return redirect('login')
+
+
+def about(request):
+    return None

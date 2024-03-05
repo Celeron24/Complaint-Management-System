@@ -1,11 +1,13 @@
 from django import forms
+from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
 from Comps.models import Complaint
 from .models import ComplaintType
 
 
 class CustomUserCreationForm(UserCreationForm):
-    class Meta(UserCreationForm.Meta):
+    class Meta:
+        model = get_user_model()
         fields = ('username', 'password1', 'password2')  # Customize fields as needed
 
 

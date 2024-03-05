@@ -5,9 +5,6 @@ from Comps.forms import CustomUserCreationForm
 from .models import ComplaintType, Complaint
 
 
-admin.site.unregister(Group)
-
-
 class CustomUserAdmin(UserAdmin):
     add_form = CustomUserCreationForm
     add_fieldsets = (
@@ -30,3 +27,4 @@ admin.site.unregister(User)
 # Register UserAdmin with the custom form
 admin.site.register(User, CustomUserAdmin)
 admin.site.register(ComplaintType)
+admin.site.unregister(Group)
