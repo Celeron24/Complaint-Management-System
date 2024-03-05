@@ -1,51 +1,33 @@
 {% extends 'base.html' %}
 {% block content %}
 
-    <!-- Header-->
-    {#        <header class="bg-dark py-5">#}
-    {#            <div class="container px-4 px-lg-5 my-5">#}
-    <div class="text-center text-black">
-        <h1 class="display-4 fw-bolder">Login</h1>
-        <p class="lead fw-normal text-black-50 mb-0">Log In To Your Account...</p>
-    </div>
-    {#            </div>#}
-    {#        </header>#}
+    {% if user.is_authenticated %}
+        <h1>You are already Logged In!</h1>
 
-    <div class="container">
-        <div class="row">
-            <div class="ctr">
-                <div class="col-8">
+    {% else %}
+        <div class="col-md-6 offset-md-3">
+            <h1>Complaint Management System</h1>
+            <h1>Login</h1>
+            <br/>
+            <form method="POST" action="{% url 'login' %}">
+                {% csrf_token %}
 
-                    <br/><br/>
-                    <form method="POST" action="{% url 'login' %}">
-                        {% csrf_token %}
+                <div class="mb-3">
 
-                        <div class="mb-3">
+                    <input type="text" class="form-control" name="username" placeholder="Enter Your Username">
 
-                            <input type="text" class="form-control" name="username" placeholder="Enter Your Username">
-
-                        </div>
-                        <div class="mb-3">
-
-                            <input type="password" class="form-control" name="password" placeholder="Enter Your Password">
-                        </div>
-                        <br/><br/>
-
-                        <div class="ctr">
-                            <button type="submit" class="btn btn-secondary">Login</button>
-                        </div>
-                    </form>
-
-                    <br/><br/>
-                    <br/><br/>
-                    <br/><br/>
-                    <br/><br/>
-                    <br/><br/>
-                    <br/><br/>
-                    <br/><br/>
                 </div>
-            </div>
-        </div>
-    </div>
+                <div class="mb-3">
 
+                    <input type="password" class="form-control" name="password" placeholder="Enter Your Password">
+                </div>
+                <br/>
+                <div class="center-container">
+                <button type="submit" class="btn btn-secondary centered-button">Submit</button>
+                </div>
+            </form>
+
+        </div>
+
+    {% endif %}
 {% endblock %}

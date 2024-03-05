@@ -14,6 +14,7 @@ class Complaint(models.Model):
         ('Assignment', 'Assignment'),
     ]
 
+    user_name = models.CharField(max_length=20, default='Anonymous')
     Comp_Assign = models.CharField(max_length=50, choices=COMP_ASSIGN_CHOICES, default=None)
     Subject = models.CharField(max_length=50)
     complaint_type = models.ForeignKey(ComplaintType, on_delete=models.CASCADE)
@@ -23,4 +24,4 @@ class Complaint(models.Model):
     # Ip address and computer name, username some changes 
 
     def __str__(self):
-        return self.Subject
+        return f'{self.user_name} - {self.created_at} - {self.Subject}'
