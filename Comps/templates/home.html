@@ -3,10 +3,10 @@
 
     <!-- Header-->
     <header class="bg-dark py-1">
-        <div class="container px-4 px-lg-5 my-5">
+        <div class="container px-2 px-lg-1 my-1">
             <div class="text-center text-white">
                 {% if user.is_authenticated %}
-                    <h1 class="display-4 fw-bolder">Complaints</h1>
+                    <h1 class="display-4">Complaint Status</h1>
                     <p class="lead fw-normal text-white-50 mb-0">Your complaints Below</p>
                     </div>
                     </div>
@@ -14,18 +14,45 @@
 
                     <div class="container">
                     <div class="row">
-                    <center>
-                        <div class="col-8">
-                            <br/><br/>
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Type</th>
+                            <th scope="col">Subject</th>
+                            <th scope="col">Created at</th>
+                            <th scope="col">Staff Assigned</th>
+                            <th scope="col">Status</th>
 
-                            {% for complaint in complaints %}
-                                <li>  {{ complaint }} </li>
+                        </tr>
+                        </thead>
+                        {% for complaint in latest_complaints %}
+                            <tbody>
 
-                            {% endfor %}
+                            <tr>
+                                <th scope="row">{{ complaint.id }}</th>
+                                <td>{{ complaint.Comp_Assign }}</td>
+                                <td>{{ complaint.Subject|slice:":25" }}</td>
+                                <td>{{ complaint.created_at }}</td>
+                                <td>{{ complaint.assigned_employee }}</td>
+                                <td>{{ complaint.get_status_display }}</td>
+                            </tr>
+                            </tbody>
+                        {% endfor %}
+                    </table>
 
-                            <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
-                        </div>
-                    </center>
+                    {#                    <center>#}
+                    {#                        <div class="col-8">#}
+                    {#                            <br/><br/>#}
+                    {#                            {% for complaint in latest_complaints %}#}
+                    {#                                <li>  {{ complaint }} </li>#}
+                    {#                                <li><b>{{ complaint.Comp_Assign }}</b> - {{ complaint.created_at }} - {{ complaint.Subject }}#}
+                    {#                                </li> <p>Status: {{ complaint.get_status_display }}</p>#}
+                    {#                                <a href="{% url 'view_complaint' pk=complaint.pk %}">(open)</a>#}
+                    {#                            {% endfor %}#}
+                    {#                            <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>#}
+                    {#                        </div>#}
+                    {#                    </center>#}
                 {% else %}
                     <h1>Access Denied</h1>
                 {% endif %}

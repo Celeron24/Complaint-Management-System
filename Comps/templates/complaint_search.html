@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="center-container">
+    <form method="post" action="{% url 'search_complaint' %}">
+        {% csrf_token %}
+        <b><label for="complaint_id" class="form-label">Complaint ID:</label></b>
+        <input class="form-control" type="text" id="complaint_id" name="complaint_id" placeholder="Type ID of complaint" required>
+        <br><button type="submit" class="btn btn-secondary">Search</button>
+    </form>
+    </div>
+{% endblock %}

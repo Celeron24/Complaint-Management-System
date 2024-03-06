@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% if error_message %}
+        <p>{{ error_message }}</p>
+    {% else %}
+        <h2>Complaint Details</h2>
+        <p>ID: {{ complaint01.id }}</p>
+        <p>Type: {{ complaint01.Comp_Assign }}</p>
+        <p>Subject: {{ complaint01.Subject }}</p>
+        <p> Description: {{ complaint01.Description }}</p>
+    {% endif %}
+
+{% endblock %}
