@@ -1,9 +1,28 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from django.views.generic import DetailView
 from Comps.forms import ComplaintForm
 from .models import Complaint
+from django.db.models import Q
+
+
+def your_search_view(request):
+    if request.user.is_authenticated:
+        query = request.GET.get('q')
+        if query:
+            searched_complaints = Complaint.objects.filter(
+                Q(id__icontains=query) |
+                Q(Comp_Assign__icontains=query) |
+                Q(Subject__icontains=query)
+            )
+        else:
+            searched_complaints = Complaint.objects.all()
+
+        return render(request, 'search.html', {'searched_complaints': searched_complaints})
+    else:
+        # Handle the case where the user is not authenticated (optional)
+        return render(request, 'login.html')
 
 
 def complaint(request):
@@ -92,7 +111,3 @@ class ViewComplaint(DetailView):
     def get_object(self, queryset=None):
         return Complaint.objects.get(pk=self.kwargs['pk'])
 
-    def search_complaints(request):
-        query = request.GET.get('query')
-        complaints = Complaint.objects.filter(subject__icontains=query) | Complaint.objects.filter(id=query)
-        return render(request, 'search_results.html', {'complaints': complaints})

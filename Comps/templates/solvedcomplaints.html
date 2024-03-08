@@ -1,13 +1,43 @@
 {% extends 'base.html' %}
 
-
-
 {% block content %}
-    <h1>solved</h1>
     <h1>Solved Complaints</h1>
-    <ul>
-        {% for complaint in solved_complaints %}
-            <li>{{ complaint }}</li>
-        {% endfor %}
-    </ul>
+    <div class="container">
+        {% if user.is_authenticated %}
+            <div class="row">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Type</th>
+                    <th scope="col">Subject</th>
+                    <th scope="col">Created at</th>
+                    <th scope="col">Staff Assigned</th>
+                    <th scope="col">Status</th>
+
+                </tr>
+                </thead>
+
+                {% for complaint in solved_complaints %}
+
+                    <tbody>
+                    <tr>
+                        <th scope="row">{{ complaint.id }}</th>
+                        <td>{{ complaint.Comp_Assign }}</td>
+                        <td>{{ complaint.Subject|slice:"25" }}</td>
+                        <td>{{ complaint.created_at }}</td>
+                        <td> {{ complaint.assigned_employee }}</td>
+                        <td> {{ complaint.status }}</td>
+
+
+                    </tr>
+                    </tbody>
+                {% endfor %}
+            </table>
+        {% else %}
+            <h1>Access Denied</h1>
+        {% endif %}
+        </div>
+    </div>
+
 {% endblock %}

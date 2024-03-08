@@ -35,7 +35,15 @@
                                 <td>{{ complaint.Subject|slice:":25" }}</td>
                                 <td>{{ complaint.created_at }}</td>
                                 <td>{{ complaint.assigned_employee }}</td>
-                                <td>{{ complaint.get_status_display }}</td>
+                                <td>
+                                    {% if complaint.status == 1 %}
+                                        <span class="badge text-bg-warning">InProgress</span>
+                                    {% elif complaint.status == 2 %}
+                                        <span class="badge text-bg-success">Solved</span>
+                                    {% elif complaint.status == 3 %}
+                                        <span class="badge text-bg-danger">Pending</span>
+                                    {% endif %}
+                                </td>
                             </tr>
                             </tbody>
                         {% endfor %}

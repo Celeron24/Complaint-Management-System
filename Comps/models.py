@@ -25,15 +25,17 @@ class Complaint(models.Model):
 
     status_choices = [
         (1, 'InProgress'),
-        (2, 'Solved')
+        (2, 'Solved'),
+        (3, 'Pending'),
     ]
-    status = models.IntegerField(choices=status_choices, default=1)
+    status = models.IntegerField(choices=status_choices, default=3)
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
     Comp_Assign = models.CharField(max_length=50, choices=COMP_ASSIGN_CHOICES, default='Complaint')
     Subject = models.CharField(max_length=50)
     complaint_type = models.ForeignKey(ComplaintType, on_delete=models.CASCADE, null=True)
     Description = models.TextField(null=True, blank=True, verbose_name='Explain in more detail')
     created_at = models.DateTimeField(auto_now_add=True)
+    closed_at = models.DateTimeField(blank=True, null=True)
 
     assigned_employee = models.ForeignKey(Employee, null=True, blank=True, on_delete=models.CASCADE)
 
