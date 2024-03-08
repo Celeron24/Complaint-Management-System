@@ -10,7 +10,6 @@ urlpatterns = [
     path('solved/', views.solvedcomplaints, name='solvedcomplaints'),
     path('about/', views.about, name='about'),
     path('view_complaint/<int:pk>/', ViewComplaint.as_view(), name='view_complaint'),
-    path('search/', views.search_complaint, name='search_complaint')
 ]
 
 

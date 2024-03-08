@@ -14,7 +14,7 @@ class CustomUserCreationForm(UserCreationForm):
 class ComplaintForm(forms.ModelForm):
     class Meta:
         model = Complaint
-        fields = ['Comp_Assign', 'complaint_type', 'Subject', 'Description']
+        fields = ['Comp_Assign',  'complaint_type', 'Subject', 'Description']
         complaint_type = forms.ModelChoiceField(queryset=ComplaintType.objects.all(), empty_label=None)
         widgets = {
             'Comp_Assign': forms.RadioSelect(attrs={'class': 'form', 'checked': 'checked',
@@ -36,7 +36,8 @@ class ComplaintForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
-        super(ComplaintForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
+
         self.fields['Comp_Assign'].required = False
         self.fields['complaint_type'].required = False
         self.fields['Subject'].required = False

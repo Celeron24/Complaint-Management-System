@@ -31,9 +31,22 @@ class CustomUserAdmin(UserAdmin):
 
 
 class DisplayToAdmin(admin.ModelAdmin):
-    list_display = ['Comp_Assign', 'Subject', 'complaint_type', 'Description', 'created_at']
-    list_filter = ['user_name', 'complaint_type']  # Add filters if needed
-    search_fields = ['user_name', 'Subject', 'Description']  # Add search fields if needed
+    list_display = ['user', 'Comp_Assign', 'Subject', 'complaint_type', 'Description', 'created_at']
+    list_filter = ['user', 'complaint_type']  # Add filters if needed
+    search_fields = ['user__username', 'Subject', 'Description']  # Add 'user__username' for searching by username
+
+    def get_readonly_fields(self, request, obj=None):
+        readonly_fields = super().get_readonly_fields(request, obj)
+        if obj:  # Existing object, make user field read-only
+            readonly_fields += ('user',)
+        return readonly_fields
+
+    def get_fieldsets(self, request, obj=None):
+        fieldsets = super().get_fieldsets(request, obj)
+        if obj:  # Existing object, add 'user' fieldset at the top
+            user_fieldset = ('User Information', {'fields': ()})
+            fieldsets = (user_fieldset,) + tuple(fieldsets)  # Convert fieldsets to tuple before concatenating
+        return fieldsets
 
 
 admin.site.register(Complaint, DisplayToAdmin)

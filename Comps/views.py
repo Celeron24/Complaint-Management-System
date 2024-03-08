@@ -72,8 +72,8 @@ def logout_user(request):
 #         return render(request, 'search.html', {})
 def solvedcomplaints(request):
     if request.user.is_authenticated:
-
-        return render(request, 'solvedcomplaints.html')
+        solved_complaints = Complaint.objects.filter(status=2)
+        return render(request, 'solvedcomplaints.html', {'solved_complaints': solved_complaints})
     else:
         messages.error(request, "You have to Login First")
         return redirect('login')
@@ -92,19 +92,7 @@ class ViewComplaint(DetailView):
     def get_object(self, queryset=None):
         return Complaint.objects.get(pk=self.kwargs['pk'])
 
-
-def search_complaint(request):
-    if request.method == 'POST':
-        complaint_id = request.POST.get('complaint_id')
-        if complaint_id:
-            try:
-                complaint01 = get_object_or_404(Complaint, id=complaint_id)
-                return render(request, 'complaint_search_result.html', {'complaint01': complaint01})
-            except Complaint.DoesNotExist:
-                error_message = f'Complaint with ID {complaint_id} does not exist.'
-                return render(request, 'complaint_search_result.html', {'error_message': error_message})
-        else:
-            # Handle the case where no ID is provided in the search form
-            return render(request, 'complaint_search_result.html', {'error_message': 'Please enter a valid complaint '
-                                                                                     'ID.'})
-    return render(request, 'complaint_search.html')
+    def search_complaints(request):
+        query = request.GET.get('query')
+        complaints = Complaint.objects.filter(subject__icontains=query) | Complaint.objects.filter(id=query)
+        return render(request, 'search_results.html', {'complaints': complaints})

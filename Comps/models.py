@@ -28,11 +28,10 @@ class Complaint(models.Model):
         (2, 'Solved')
     ]
     status = models.IntegerField(choices=status_choices, default=1)
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
-    user_name = models.CharField(max_length=20)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
     Comp_Assign = models.CharField(max_length=50, choices=COMP_ASSIGN_CHOICES, default='Complaint')
     Subject = models.CharField(max_length=50)
-    complaint_type = models.ForeignKey(ComplaintType, on_delete=models.CASCADE)
+    complaint_type = models.ForeignKey(ComplaintType, on_delete=models.CASCADE, null=True)
     Description = models.TextField(null=True, blank=True, verbose_name='Explain in more detail')
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -49,4 +48,4 @@ class Comment(models.Model):
     date_added = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return '%s - %s' % (self.post.user_name, self.name)
+        return '%s - %s' % (self.post.user, self.name)
