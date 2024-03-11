@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
-{% block content %}
 
+{% block content %}
     <!-- Header-->
     <header class="bg-dark py-1">
         <div class="container px-2 px-lg-1 my-1">
@@ -11,9 +11,18 @@
                     </div>
                     </div>
                     </header>
-
+                    <form id="sortingForm" method="get" action="{% url 'home' %}">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="radio" name="sort_by" value="default" id="flexSwitchCheckDefault" {% if sort_by == 'default' %}checked{% endif %}>
+                            <label class="form-check-label" for="flexSwitchCheckDefault">Sort by ID</label>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="radio" name="sort_by" value="checked" id="flexSwitchCheckChecked" {% if sort_by == 'checked' %}checked{% endif %}>
+                            <label class="form-check-label" for="flexSwitchCheckChecked">Sort by Subject</label>
+                        </div>
+                    </form>
                     <div class="container">
-                    <div class="row">
+                    <nav class="row">
                     <table class="table table-hover">
                         <thead>
                         <tr>
@@ -23,12 +32,10 @@
                             <th scope="col">Created at</th>
                             <th scope="col">Staff Assigned</th>
                             <th scope="col">Status</th>
-
                         </tr>
                         </thead>
-                        {% for complaint in latest_complaints %}
-                            <tbody>
-
+                        <tbody>
+                        {% for complaint in all_complaints %}
                             <tr>
                                 <th scope="row">{{ complaint.id }}</th>
                                 <td>{{ complaint.Comp_Assign }}</td>
@@ -45,26 +52,62 @@
                                     {% endif %}
                                 </td>
                             </tr>
-                            </tbody>
                         {% endfor %}
+                        </tbody>
                     </table>
 
-                    {#                    <center>#}
-                    {#                        <div class="col-8">#}
-                    {#                            <br/><br/>#}
-                    {#                            {% for complaint in latest_complaints %}#}
-                    {#                                <li>  {{ complaint }} </li>#}
-                    {#                                <li><b>{{ complaint.Comp_Assign }}</b> - {{ complaint.created_at }} - {{ complaint.Subject }}#}
-                    {#                                </li> <p>Status: {{ complaint.get_status_display }}</p>#}
-                    {#                                <a href="{% url 'view_complaint' pk=complaint.pk %}">(open)</a>#}
-                    {#                            {% endfor %}#}
-                    {#                            <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>#}
-                    {#                        </div>#}
-                    {#                    </center>#}
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-center">
+                            {% if all_complaints.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page=1" aria-label="First">
+                                        <span aria-hidden="true">&laquo;&laquo;</span>
+                                    </a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ all_complaints.previous_page_number }}" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                            {% endif %}
+
+                            {% for i in all_complaints.paginator.page_range %}
+                                <li class="page-item {% if all_complaints.number == i %}active{% endif %}">
+                                    <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+                                </li>
+                            {% endfor %}
+
+                            {% if all_complaints.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ all_complaints.next_page_number }}" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ all_complaints.paginator.num_pages }}" aria-label="Last">
+                                        <span aria-hidden="true">&raquo;&raquo;</span>
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+
                 {% else %}
                     <h1>Access Denied</h1>
                 {% endif %}
+                </nav>
                 </div>
-                </div>
-
 {% endblock %}
+
+<script>
+    // Use JavaScript to submit the form on radio button change
+    document.querySelectorAll('input[name="sort_by"]').forEach(function(radio) {
+        radio.addEventListener('change', function() {
+            console.log("Sorting option changed");
+            if (document.getElementById('autoSortCheckbox').checked) {
+                console.log("Auto Sort checkbox is checked");
+                document.getElementById('sortingForm').submit();
+            }
+        });
+    });
+</script>

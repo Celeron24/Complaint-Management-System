@@ -1,5 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
+from django.utils import timezone
 
 
 class ComplaintType(models.Model):
@@ -41,6 +44,12 @@ class Complaint(models.Model):
 
     def __str__(self):
         return f'{self.Comp_Assign} - {self.Subject} - {self.created_at}'
+
+
+@receiver(pre_save, sender=Complaint)
+def update_closed_at(sender, instance, **kwargs):
+    if instance.status == 'Solved' and not instance.closed_at:
+        instance.closed_at = timezone.now()
 
 
 class Comment(models.Model):

@@ -5,6 +5,7 @@ from django.views.generic import DetailView
 from Comps.forms import ComplaintForm
 from .models import Complaint
 from django.db.models import Q
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 def your_search_view(request):
@@ -52,8 +53,25 @@ def complaint(request):
 
 
 def home(request):
-    latest_complaints = Complaint.objects.all().order_by('created_at')[:5]  # Adjust the number as needed
-    context = {'latest_complaints': latest_complaints}
+    valid_sort_fields = ['id', 'subject', 'created_at']
+    # sort_by = Complaint.objects.all().order_by('id', 'subject', 'created_at')  # Adjust the number as needed [:5]
+    default_sort_field = 'created_at'
+
+    sort_by = request.GET.get('sort_by', default_sort_field)
+    if sort_by not in valid_sort_fields:
+        sort_by = default_sort_field
+
+    all_complaints = Complaint.objects.all().order_by(sort_by)
+    paginator = Paginator(all_complaints, 5)
+
+    page = request.GET.get('page')
+    try:
+        all_complaints = paginator.page(page)
+    except PageNotAnInteger:
+        all_complaints = paginator.page(1)
+    except EmptyPage:
+        all_complaints = paginator.page(paginator.num_pages)
+    context = {'all_complaints': all_complaints, 'sort_by': sort_by}
     return render(request, 'home.html', context)
 
 
@@ -110,4 +128,3 @@ class ViewComplaint(DetailView):
 
     def get_object(self, queryset=None):
         return Complaint.objects.get(pk=self.kwargs['pk'])
-
