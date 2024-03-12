@@ -46,10 +46,10 @@ class Complaint(models.Model):
         return f'{self.Comp_Assign} - {self.Subject} - {self.created_at}'
 
 
-@receiver(pre_save, sender=Complaint)
-def update_closed_at(sender, instance, **kwargs):
-    if instance.status == 'Solved' and not instance.closed_at:
-        instance.closed_at = timezone.now()
+# @receiver(pre_save, sender=Complaint)
+# def update_closed_at(sender, instance, **kwargs):
+#     if instance.status == 'Solved' and not instance.closed_at:
+#         instance.closed_at = timezone.now()
 
 
 class Comment(models.Model):
