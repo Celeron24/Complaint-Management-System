@@ -67,6 +67,7 @@
                         </thead>
                         <tbody>
                         {% for complaint in all_complaints %}
+                            <tbody>
                             <tr>
                                 <th scope="row">{{ complaint.id }}</th>
                                 <td>{{ complaint.Comp_Assign }}</td>
@@ -83,10 +84,9 @@
                                     {% endif %}
                                 </td>
                             </tr>
+                            </tbody>
                         {% endfor %}
-                        </tbody>
                     </table>
-
                     <nav aria-label="Page navigation example">
                         <ul class="pagination justify-content-center">
                             {% if all_complaints.has_previous %}
@@ -95,6 +95,7 @@
                                         <span aria-hidden="true">&laquo;&laquo;</span>
                                     </a>
                                 </li>
+
                                 <li class="page-item">
                                     <a class="page-link" href="?page={{ all_complaints.previous_page_number }}" aria-label="Previous">
                                         <span aria-hidden="true">&laquo;</span>
