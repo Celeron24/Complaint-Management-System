@@ -54,27 +54,29 @@ def complaint(request):
 
 
 def home(request):
-    valid_sort_fields = ['id', 'Subject', 'created_at']
-    default_sort_field = 'created_at'
+    # valid_sort_fields = ['-status', 'created_at', 'id', 'Subject']
+    default_sort_field = '-status'
 
+    # Get the sorting preference from the session or use the default
     sort_by = request.GET.get('sort_by', default_sort_field)
 
-    if sort_by not in valid_sort_fields:
-        sort_by = default_sort_field
+    # Check if auto_sort parameter is present in the request
+    auto_sort = request.GET.get('auto_sort')
 
-    # Determine the appropriate order based on sort_by
-    order = sort_by if not sort_by.endswith('-') else f'-{sort_by.rstrip("-")}'
+    if auto_sort:
+        # Update the session with the current sorting preference
+        request.session['sort_by'] = sort_by
+    else:
+        # If auto_sort is not present, use the session sorting preference
+        sort_by = request.session.get('sort_by', default_sort_field)
 
-    # Use aggregation to get the min and max created_at values
-    min_created_at = Complaint.objects.all().aggregate(min_created_at=Min('created_at'))['min_created_at']
-    max_created_at = Complaint.objects.all().aggregate(max_created_at=Max('created_at'))['max_created_at']
-
-    # Determine the oldest and latest created_at values
-    oldest_created_at = min_created_at if sort_by == 'created_at' else None
-    latest_created_at = max_created_at if sort_by == 'created_at' else None
-
-    all_complaints = Complaint.objects.all().order_by(order)
-    paginator = Paginator(all_complaints, 5)
+    # If sorting by status, move pending complaints to the first page
+    if sort_by == '-status':
+        all_complaints = Complaint.objects.order_by('-status', 'created_at')
+        paginator = Paginator(all_complaints, 5)
+    else:
+        all_complaints = Complaint.objects.all().order_by(sort_by)
+        paginator = Paginator(all_complaints, 5)
 
     page = request.GET.get('page')
     try:
@@ -84,12 +86,7 @@ def home(request):
     except EmptyPage:
         all_complaints = paginator.page(paginator.num_pages)
 
-    context = {
-        'all_complaints': all_complaints,
-        'sort_by': sort_by,
-        'oldest_created_at': oldest_created_at,
-        'latest_created_at': latest_created_at,
-    }
+    context = {'all_complaints': all_complaints, 'sort_by': sort_by}
     return render(request, 'home.html', context)
 
 
@@ -127,7 +124,7 @@ def logout_user(request):
 #         return render(request, 'search.html', {})
 def solvedcomplaints(request):
     if request.user.is_authenticated:
-        solved_complaints = Complaint.objects.filter(status=2)
+        solved_complaints = Complaint.objects.filter(status=1)
         return render(request, 'solvedcomplaints.html', {'solved_complaints': solved_complaints})
     else:
         messages.error(request, "You have to Login First")

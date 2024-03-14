@@ -27,9 +27,9 @@ class Complaint(models.Model):
     ]
 
     status_choices = [
-        (1, 'InProgress'),
-        (2, 'Solved'),
         (3, 'Pending'),
+        (2, 'InProgress'),
+        (1, 'Solved'),
     ]
     status = models.IntegerField(choices=status_choices, default=3)
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)

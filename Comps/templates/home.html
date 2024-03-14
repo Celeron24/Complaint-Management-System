@@ -16,24 +16,42 @@
                             <div class="form-check form-switch form-check-inline">
                                 <p><b>Sort By:</b></p>
                             </div>
+
                             <div class="form-check form-switch form-check-inline">
                                 <input class="form-check-input" type="radio" name="sort_by" value="Subject" id="flexSwitchCheckSubject" {% if sort_by == 'Subject' %}checked{% endif %}>
                                 <label class="form-check-label" for="flexSwitchCheckSubject">Subject</label>
                             </div>
+
                             <span class="mx-1">|</span>
+
                             <div class="form-check form-switch form-check-inline">
-                                <input class="form-check-input" type="radio" name="sort_by" value="-created_at" id="flexSwitchCheckOldest" {% if sort_by == '-created_at' %}checked{% endif %}>
-                                <label class="form-check-label" for="flexSwitchCheckOldest">Oldest</label>
-                            </div>
-                            <span class="mx-1">|</span>
-                            <div class="form-check form-switch form-check-inline">
-                                <input class="form-check-input" type="radio" name="sort_by" value="created_at" id="flexSwitchCheckLatest" {% if sort_by == 'created_at' %}checked{% endif %}>
+                                <input class="form-check-input" type="radio" name="sort_by" value="-created_at" id="flexSwitchCheckLatest" {% if sort_by == '-created_at' %}checked{% endif %}>
                                 <label class="form-check-label" for="flexSwitchCheckLatest">Latest</label>
                             </div>
-                        &nbsp;&nbsp;&nbsp;
-                            <button type="submit" class="btn btn-primary btn-sm" style="display: inline-block">GO</button>  <!-- Hidden submit button to trigger form submission -->
+
+                            <span class="mx-1">|</span>
+
+                            <div class="form-check form-switch form-check-inline">
+                                <input class="form-check-input" type="radio" name="sort_by" value="created_at" id="flexSwitchCheckOldest" {% if sort_by == 'created_at' %}checked{% endif %}>
+                                <label class="form-check-label" for="flexSwitchCheckOldest">Oldest</label>
+                            </div>
+
+                            <input type="hidden" name="auto_sort" value="1">
+
+                            <span class="mx-1">|</span>
+
+                            <div class="form-check form-switch form-check-inline">
+                                <input class="form-check-input" type="radio" name="sort_by" value="-status" id="flexSwitchCheckStatus" {% if sort_by == '-status' %}checked{% endif %}>
+                                <label class="form-check-label" for="flexSwitchCheckStatus">Status</label>
+                            </div>
+
+                            &nbsp;&nbsp;&nbsp;
+                            <button type="submit" class="btn btn-primary btn-sm" style="display: none"></button> <!-- Hidden submit button to trigger form submission -->
                         </form>
                     </div>
+
+
+
                     <div class="container">
                     <nav class="row">
                     <table class="table table-hover">
@@ -56,9 +74,9 @@
                                 <td>{{ complaint.created_at }}</td>
                                 <td>{{ complaint.assigned_employee }}</td>
                                 <td>
-                                    {% if complaint.status == 1 %}
+                                    {% if complaint.status == 2 %}
                                         <span class="badge text-bg-warning">InProgress</span>
-                                    {% elif complaint.status == 2 %}
+                                    {% elif complaint.status == 1 %}
                                         <span class="badge text-bg-success">Solved</span>
                                     {% elif complaint.status == 3 %}
                                         <span class="badge text-bg-danger">Pending</span>
@@ -110,14 +128,22 @@
                 {% endif %}
                 </nav>
                 </div>
-    {#    <script>#}
-    {#        document.addEventListener('DOMContentLoaded', function() {#}
-    {#            // Check if the form was already submitted#}
-    {#            if (!localStorage.getItem('sortingFormSubmitted')) {#}
-    {#                document.getElementById('sortingForm').submit();#}
-    {#                localStorage.setItem('sortingFormSubmitted', 'true');#}
-    {#            }#}
-    {#        });#}
-    {#    </script>#}
+    {#        <script>#}
+    {#            document.addEventListener('DOMContentLoaded', function() {#}
+    {#                // Check if the form was already submitted#}
+    {#                if (!localStorage.getItem('sortingFormSubmitted')) {#}
+    {#                    document.getElementById('sortingForm').submit();#}
+    {#                    localStorage.setItem('sortingFormSubmitted', 'true');#}
+    {#                }#}
+    {#            });#}
+    {#        </script>#}
 
+    <script>
+        document.querySelectorAll('input[name="sort_by"]').forEach(function (radio) {
+            radio.addEventListener('change', function () {
+                console.log("Sorting option changed");
+                document.getElementById('sortingForm').submit();
+            });
+        });
+    </script>
 {% endblock %}
