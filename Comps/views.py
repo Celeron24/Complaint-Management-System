@@ -6,7 +6,6 @@ from Comps.forms import ComplaintForm
 from .models import Complaint
 from django.db.models import Q
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.db.models import Max, Min
 
 
 def your_search_view(request):
@@ -52,45 +51,6 @@ def complaint(request):
     #         pass
     # return render(request, "complaint.html", {'form': form})
 
-
-def home(request):
-    valid_sort_fields = ['id', 'Subject', 'created_at']
-    default_sort_field = 'created_at'
-
-    sort_by = request.GET.get('sort_by', default_sort_field)
-
-    if sort_by not in valid_sort_fields:
-        sort_by = default_sort_field
-
-    # Determine the appropriate order based on sort_by
-    order = sort_by if not sort_by.endswith('-') else f'-{sort_by.rstrip("-")}'
-
-    # Use aggregation to get the min and max created_at values
-    min_created_at = Complaint.objects.all().aggregate(min_created_at=Min('created_at'))['min_created_at']
-    max_created_at = Complaint.objects.all().aggregate(max_created_at=Max('created_at'))['max_created_at']
-
-    # Determine the oldest and latest created_at values
-    oldest_created_at = min_created_at if sort_by == 'created_at' else None
-    latest_created_at = max_created_at if sort_by == 'created_at' else None
-
-    all_complaints = Complaint.objects.all().order_by(order)
-    paginator = Paginator(all_complaints, 5)
-
-    page = request.GET.get('page')
-    try:
-        all_complaints = paginator.page(page)
-    except PageNotAnInteger:
-        all_complaints = paginator.page(1)
-    except EmptyPage:
-        all_complaints = paginator.page(paginator.num_pages)
-
-    context = {
-        'all_complaints': all_complaints,
-        'sort_by': sort_by,
-        'oldest_created_at': oldest_created_at,
-        'latest_created_at': latest_created_at,
-    }
-    return render(request, 'home.html', context)
 
 
 def login_user(request):
