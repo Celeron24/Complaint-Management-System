@@ -13,6 +13,7 @@
                     </header>
                     <div class="center-container">
                         <form id="sortingForm" method="get" action="{% url 'home' %}">
+                        {% csrf_token %}
                             <div class="form-check form-switch form-check-inline">
                                 <p><b>Sort By:</b></p>
                             </div>
