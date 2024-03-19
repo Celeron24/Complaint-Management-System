@@ -14,6 +14,7 @@
                     <div class="center-container">
                         <form id="sortingForm" method="get" action="{% url 'home' %}">
                         {% csrf_token %}
+
                             <div class="form-check form-switch form-check-inline">
                                 <p><b>Sort By:</b></p>
                             </div>
@@ -66,21 +67,20 @@
                             <th scope="col">Status</th>
                         </tr>
                         </thead>
-                        <tbody>
-                        {% for complaint in all_complaints %}
+                        {% for all in all_complaints %}
                             <tbody>
                             <tr>
-                                <th scope="row">{{ complaint.id }}</th>
-                                <td>{{ complaint.Comp_Assign }}</td>
-                                <td>{{ complaint.Subject|slice:":25" }}</td>
-                                <td>{{ complaint.created_at }}</td>
-                                <td>{{ complaint.assigned_employee }}</td>
+                                <th scope="row">{{ all.id}}</th>
+                                <td>{{ all.Comp_Assign }}</td>
+                                <td>{{ all.Subject|slice:":25" }}</td>
+                                <td>{{ all.created_at }}</td>
+                                <td>{{ all.assigned_employee }}</td>
                                 <td>
-                                    {% if complaint.status == 2 %}
+                                    {% if all.status == 2 %}
                                         <span class="badge text-bg-warning">InProgress</span>
-                                    {% elif complaint.status == 1 %}
+                                    {% elif all.status == 1 %}
                                         <span class="badge text-bg-success">Solved</span>
-                                    {% elif complaint.status == 3 %}
+                                    {% elif all.status == 3 %}
                                         <span class="badge text-bg-danger">Pending</span>
                                     {% endif %}
                                 </td>

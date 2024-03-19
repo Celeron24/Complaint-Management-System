@@ -1,5 +1,4 @@
 from datetime import datetime
-
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
@@ -10,57 +9,20 @@ from django.db.models import Q
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
-# def your_search_view(request):
-#     if request.user.is_authenticated:
-#         query = request.GET.get('q')
-#         if query:
-#             # Ensure that only complaints belonging to the current user are retrieved
-#             searched_complaints = Complaint.objects.filter(
-#                 Q(id__icontains=query) |
-#                 Q(Comp_Assign__icontains=query) |
-#                 Q(Subject__icontains=query),
-#                 user=request.user
-#             )
-#         else:
-#             # Also filter complaints by the current user
-#             searched_complaints = Complaint.objects.filter(user=request.user)
-#         return render(request, 'search.html', {'searched_complaints': searched_complaints})
-#     else:
-#         # Handle the case where the user is not authenticated (optional)
-#         return render(request, 'login.html')
-
 def your_search_view(request):
     if request.user.is_authenticated:
         query = request.GET.get('q')
-        searched_complaints = None  # Initialize to None
         if query:
-            if ',' in query:
-                # Split the user input into date, month, and year
-                try:
-                    # Assuming the input format is "March 12, 2024"
-                    search_date, search_month, search_year = query.split(' ')
-                    search_datetime = datetime.strptime(f'{search_month} {search_date}, {search_year}', '%B %d, %Y')
-                except ValueError:
-                    # Handle invalid datetime format
-                    return render(request, 'search.html', {'error_message': 'Invalid datetime format'})
-
-                # Ensure that only complaints belonging to the current user are retrieved
-                searched_complaints = Complaint.objects.filter(
-                    Q(created_at__date=search_datetime.date()),
-                    user=request.user
-                )
-            else:
-                # Ensure that only complaints belonging to the current user are retrieved
-                searched_complaints = Complaint.objects.filter(
-                    Q(id__iexact=query) |
-                    Q(Comp_Assign__iexact=query) |
-                    Q(Subject__iexact=query),
-                    user=request.user
-                )
+            # Ensure that only complaints belonging to the current user are retrieved
+            searched_complaints = Complaint.objects.filter(
+                Q(id__iexact=query) |
+                Q(Comp_Assign__iexact=query) |
+                Q(Subject__iexact=query),
+                user=request.user
+            )
         else:
-            # If no query is provided, do not fetch complaints
             searched_complaints = Complaint.objects.none()
-        messages.error(request, 'Complaint doesnt exist')
+            messages.error(request, 'Type either the ID or Subject of complaint/assignment')
         return render(request, 'search.html', {'searched_complaints': searched_complaints})
     else:
         # Handle the case where the user is not authenticated (optional)
@@ -99,7 +61,6 @@ def home(request):
 
         paginator = Paginator(all_complaints, 10)
         page = request.GET.get('page')
-
         try:
             all_complaints = paginator.page(page)
         except PageNotAnInteger:
