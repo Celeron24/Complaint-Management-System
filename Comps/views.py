@@ -1,9 +1,9 @@
 from datetime import datetime
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import DetailView
-from Comps.forms import ComplaintForm
+from Comps.forms import ComplaintForm, CommentForm
 from .models import Complaint
 from django.db.models import Q
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -107,14 +107,35 @@ def solvedcomplaints(request):
 
 
 def about(request):
-    return None
+    return render(request, 'about.html')
 
 
 class ViewComplaint(DetailView):
     model = Complaint
-    form_class = ComplaintForm
+    form_class = CommentForm
     template_name = 'view_complaint.html'
     context_object_name = 'complaint'  # Optionally specify the context variable name
 
+    def __init__(self, **kwargs):
+        super().__init__(kwargs)
+        self.object = None
+
     def get_object(self, queryset=None):
-        return Complaint.objects.get(pk=self.kwargs['pk'], user=self.request.user)
+        return get_object_or_404(Complaint, pk=self.kwargs['pk'], user=self.request.user)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['comment_form'] = self.form_class()
+        return context
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.post = self.object
+            comment.name = request.user.username  # Assuming you want to save the username as the comment author
+            comment.save()
+            return redirect('view_complaint', pk=self.object.pk)
+        else:
+            return self.render_to_response(self.get_context_data(form=form))

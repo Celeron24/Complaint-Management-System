@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
-from Comps.models import Complaint
+from Comps.models import Complaint, Comment
 from .models import ComplaintType
 
 
@@ -42,3 +42,13 @@ class ComplaintForm(forms.ModelForm):
         self.fields['complaint_type'].required = False
         self.fields['Subject'].required = False
         self.fields['Description'].required = False
+
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['name', 'body']
+        widgets = {
+            'name': forms.TextInput(attrs={'placeholder': 'Your name'}),
+            'body': forms.Textarea(attrs={'placeholder': 'Enter your comment here...', 'rows': 4})
+        }
