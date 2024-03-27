@@ -13,7 +13,7 @@
                     </header>
                     <div class="center-container">
                         <form id="sortingForm" method="get" action="{% url 'home' %}">
-                        {% csrf_token %}
+                            {% csrf_token %}
 
                             <div class="form-check form-switch form-check-inline">
                                 <p><b>Sort By:</b></p>
@@ -84,7 +84,9 @@
                                         <span class="badge text-bg-danger">Pending</span>
                                     {% endif %}
                                 </td>
+                                <td>   <a href="{% url 'view_complaint' all.id %}">View</a></td>
                             </tr>
+
                             </tbody>
                         {% endfor %}
                     </table>

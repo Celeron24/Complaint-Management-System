@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User, Group
 from Comps.forms import CustomUserCreationForm
-from .models import ComplaintType, Complaint, Employee
+from .models import ComplaintType, Complaint, Employee, Comment
 
 
 class EmployeeAdmin(admin.ModelAdmin):
@@ -56,3 +56,4 @@ admin.site.unregister(User)
 admin.site.register(User, CustomUserAdmin)
 admin.site.register(ComplaintType)
 admin.site.unregister(Group)
+admin.site.register(Comment)

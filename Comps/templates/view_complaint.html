@@ -2,31 +2,50 @@
 {% block title %}View Complaint{% endblock %}
 {% block content %}
 
-    
-{% if user.is_authenticated %}
-{#	{% if user.id == post.author.id %}#}
+    {% if user.is_authenticated %}
+        {% if user.id == complaint.user.id %}
+            {% csrf_token %}
+            <h1>Detail View</h1>
+            <br/><br/>
 
-		<h1>Update Complaint</h1>
-		<br/><br/>
+            <div class="form-group">
+                <p><strong>ID:</strong> {{ complaint.id }}</p>
+                <p><strong>Status:</strong>
+                    {% if complaint.status == 2 %}
+                        <span class="badge text-bg-warning">InProgress</span>
+                    {% elif complaint.status == 1 %}
+                        <span class="badge text-bg-success">Solved</span>
+                    {% elif complaint.status == 3 %}
+                        <span class="badge text-bg-danger">Pending</span>
+                    {% endif %}
+                </p>
+                <p><strong>Title:</strong> {{ complaint.Subject }}</p>
+                <p><strong>Description:</strong> {{ complaint.Description }}</p>
+            </div>
 
-		<div class="form-group">
-			<form method="POST">
-				{% csrf_token %}
-				{{ form.media }}
-				{{ form.as_p }}
-				<button class="btn btn-secondary">Update</button>
+            <hr>
+            <h4>Comments</h4>
+            <ul>
+                {% for comment in comments %}
+                    <li>{{ comment.user.username }}: {{ comment.text }}</li>
+                {% endfor %}
+            </ul>
+
+            <h4>Add a Comment</h4>
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-floating">
+                    <textarea class="form-control" placeholder="Leave a comment here" id="id_body" name="body" rows="4">{% if form.instance.body %}{{ form.instance.body }}{% endif %}</textarea>
+                    <label for="id_body">Comments</label>
+                </div>
+                <button type="submit" class="btn btn-secondary centered-button">Submit</button>
             </form>
-		</div>
-{#	{% else %}#}
-{#			You're not allowed here! (and you know it...)#}
-{#	{% endif %}		#}
-{#{% else %}#}
-{##}
-{#You're not allowed here! (and you know it...)#}
 
-{% endif %}
-
-
-
+        {% else %}
+            You're not allowed here! (and you know it...)
+        {% endif %}
+    {% else %}
+        You're not allowed here! (and you know it...)
+    {% endif %}
 
 {% endblock %}

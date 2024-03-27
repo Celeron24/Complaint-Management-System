@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from .views import ViewComplaint
+# from .views import ViewComplaint
 
 urlpatterns = [
     path('', views.home, name='home'),
@@ -9,7 +9,8 @@ urlpatterns = [
     path('complaint/', views.complaint, name='complaint'),
     path('solved/', views.solvedcomplaints, name='solvedcomplaints'),
     path('about/', views.about, name='about'),
-    path('view_complaint/<int:pk>/', ViewComplaint.as_view(), name='view_complaint'),
+    # path('view_complaint/<int:pk>/', ViewComplaint.as_view(), name='view_complaint'),
+    path('view_complaint/<int:pk>/', views.view_complaint, name='view_complaint'),
     path('search/', views.your_search_view, name='search'),
 ]
 
