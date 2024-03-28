@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 
 class ComplaintType(models.Model):
@@ -45,8 +46,8 @@ class Comment(models.Model):
     complaint = models.ForeignKey(Complaint, on_delete=models.CASCADE, related_name='comments')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     text = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    is_admin_comment = models.BooleanField(default=False)  # Add this field to mark admin comments
+    created_at = models.DateTimeField(default=timezone.now)
+    is_admin_comment = models.BooleanField(default=True)  # Add this field to mark adminsite comments
 
     def __str__(self):
-        return self.text
+        return '{}-{}'.format(self.complaint.Subject, str(self.user.username))

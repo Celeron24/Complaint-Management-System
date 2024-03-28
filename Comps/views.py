@@ -128,7 +128,7 @@ def view_complaint(request, pk):
     if request.user.is_authenticated:
         try:
             complaint = Complaint.objects.get(id=pk)
-            if request.user.is_staff:  # Check if the user is an admin
+            if request.user.is_staff:  # Check if the user is an adminsite
                 comments = complaint.comments.filter(is_admin_comment=True)
             else:
                 comments = complaint.comments.all()
@@ -142,7 +142,7 @@ def view_complaint(request, pk):
                 new_comment = form.save(commit=False)
                 new_comment.complaint = complaint
                 new_comment.user = request.user
-                if request.user.is_staff:  # Set is_admin_comment field for admin comments
+                if request.user.is_staff:  # Set is_admin_comment field for adminsite comments
                     new_comment.is_admin_comment = True
                 new_comment.save()
                 form = CommentForm()  # Reset form after saving comment
