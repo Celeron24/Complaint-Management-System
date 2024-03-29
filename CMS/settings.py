@@ -22,6 +22,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'crispy_forms',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -57,9 +58,14 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+            'builtins': [
+                'crispy_forms.templatetags.crispy_forms_tags',
+                'crispy_forms.templatetags.crispy_forms_field',
+            ],
         },
     },
 ]
+
 
 WSGI_APPLICATION = 'CMS.wsgi.application'
 
@@ -126,3 +132,5 @@ SESSION_COOKIE_NAME = 'user_session_id'
 
 # For the adminsite panel
 ADMIN_SESSION_COOKIE_NAME = 'admin_session_id'
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'

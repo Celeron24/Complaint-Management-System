@@ -38,10 +38,10 @@ class ComplaintForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.fields['Comp_Assign'].required = False
-        self.fields['complaint_type'].required = False
-        self.fields['Subject'].required = False
-        self.fields['Description'].required = False
+        self.fields['Comp_Assign'].required = True
+        self.fields['complaint_type'].required = True
+        self.fields['Subject'].required = True
+        self.fields['Description'].required = True
 
 
 class CommentForm(forms.ModelForm):

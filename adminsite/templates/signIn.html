@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+{% block content %}
+    <body>
+    <div  class="jumbotron text-center jbg">
+        <h1 style="color:rgb(110, 110, 110)">Complaint Management System</h1>
+        <p style="color:rgb(99, 99, 99)">Choose your Preferred Login Below</p>
+    </div>
+
+    {% load static %}
+    <center>
+        <div class="row d-flex justify-content-center ">
+            <div class="col-sm-3">
+                <div class="card mx-auto ">
+                    <div class="col">
+                        <br>
+                        <img src="{% static 'admin/img/seclgn.png' %}" class="img-rounded" alt="Cinque Terre">
+
+                        <p></p>
+                        <a href="/login/"><button type="button" class="btn  btn-primary">Student/Staff Login</button></a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="card mx-auto">
+                    <div class="col">
+
+                        <br>
+                        <img src="{% static 'admin/img/adminn.png' %}" class="img-rounded" alt="Cinque Terre">
+                        <p></p>
+                        <a href="/admin/" class="btn  btn-danger">Admin Login</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </center>
+    </body>
+
+{% endblock %}
+</nav>
