@@ -93,7 +93,7 @@ def login_user(request):
 def logout_user(request):
     logout(request)
     messages.success(request, "You have successfully logged out")
-    return redirect('login')
+    return redirect('signIn')
 
 
 def solvedcomplaints(request):
@@ -109,50 +109,32 @@ def about(request):
     return render(request, 'about.html')
 
 
-# def view_complaint(request, complaint_id):
-#     if request.user.is_authenticated:
-#         complaint_view = get_object_or_404(Complaint, id=complaint_id)
-#
-#         # Check if the logged-in user is the same as the user who submitted the complaint
-#         if request.user.username == complaint_view.user.username:
-#             return render(request, 'view_complaint.html', {'complaint_view': complaint_view})
-#         else:
-#             # If the logged-in user is not the same as the user who submitted the complaint, handle accordingly
-#             messages.error(request, "You are not authorized to view this complaint.")
-#             return redirect('home')  # Redirect to a suitable page, like the dashboard
-#     else:
-#         messages.error(request, "You have to log in first")
-#         return redirect('login')
+class ViewComplaint(DetailView):
+    model = Complaint
+    form_class = CommentForm
+    template_name = 'view_complaint.html'
+    context_object_name = 'complaint'  # Optionally specify the context variable name
 
-def view_complaint(request, pk):
-    if request.user.is_authenticated:
-        try:
-            complaint = Complaint.objects.get(id=pk)
-            if request.user.is_staff:  # Check if the user is an adminsite
-                comments = complaint.comments.filter(is_admin_comment=True)
-            else:
-                comments = complaint.comments.all()
-        except Complaint.DoesNotExist:
-            messages.error(request, "The complaint you are trying to view does not exist.")
-            return redirect('home')  # Redirect the user to the home page or any other page
+    def __init__(self, **kwargs):
+        super().__init__(kwargs)
+        self.object = None
 
-        form = CommentForm(request.POST or None)
-        if request.method == 'POST':
-            if form.is_valid():
-                new_comment = form.save(commit=False)
-                new_comment.complaint = complaint
-                new_comment.user = request.user
-                if request.user.is_staff:  # Set is_admin_comment field for adminsite comments
-                    new_comment.is_admin_comment = True
-                new_comment.save()
-                form = CommentForm()  # Reset form after saving comment
+    def get_object(self, queryset=None):
+        return get_object_or_404(Complaint, pk=self.kwargs['pk'], user=self.request.user)
 
-        context = {
-            'complaint': complaint,
-            'comments': comments,  # Pass comments to the template context
-            'form': form,
-        }
-        return render(request, 'view_complaint.html', context)
-    else:
-        messages.error(request, "You must be logged in to view this page.")
-        return redirect('login')
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['comment_form'] = self.form_class()
+        return context
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.post = self.object
+            comment.name = request.user.username  # Assuming you want to save the username as the comment author
+            comment.save()
+            return redirect('view_complaint', pk=self.object.pk)
+        else:
+            return self.render_to_response(self.get_context_data(form=form))

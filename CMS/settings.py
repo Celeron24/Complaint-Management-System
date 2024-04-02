@@ -2,7 +2,6 @@
 import os.path
 from pathlib import Path
 
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -22,7 +21,6 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'crispy_forms',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -57,10 +55,6 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-            ],
-            'builtins': [
-                'crispy_forms.templatetags.crispy_forms_tags',
-                'crispy_forms.templatetags.crispy_forms_field',
             ],
         },
     },
@@ -130,7 +124,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # For the main website
 SESSION_COOKIE_NAME = 'user_session_id'
 
-# For the adminsite panel
+# For the admin panel
 ADMIN_SESSION_COOKIE_NAME = 'admin_session_id'
 
-CRISPY_TEMPLATE_PACK = 'bootstrap4'

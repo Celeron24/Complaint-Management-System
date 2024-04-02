@@ -23,7 +23,11 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link"
-                           href="{% url 'add-user' %}">Add User</a>
+                           href="{% url 'add_user' %}">Add User</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link"
+                           href="{% url 'user_management' %}">Manage Users</a>
                     </li>
                     {#                    <li class="nav-item">#}
                     {#                    <a class="nav-link"#}
@@ -54,8 +58,8 @@
                     </ul>
                 {% else %}
                     <li class="nav-item">
-{#                        <a class="nav-link"#}
-{#                           href="{% url 'login' %}">Login</a>#}
+                        <a class="nav-link"
+                           href="{% url 'signIn' %}">Choose</a>
                     </li>
                 {% endif %}
         </div>

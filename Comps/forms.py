@@ -47,8 +47,7 @@ class ComplaintForm(forms.ModelForm):
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
-        fields = ['text']  # Include only the 'text' field in the form
-
-    def __init__(self, *args, **kwargs):
-        super(CommentForm, self).__init__(*args, **kwargs)
-        self.fields['text'].widget = forms.Textarea(attrs={'placeholder': 'Enter your comment here...', 'rows': 4})
+        fields = ['name']
+        widgets = {
+            'name': forms.TextInput(attrs={'placeholder': 'Your name'}),
+        }

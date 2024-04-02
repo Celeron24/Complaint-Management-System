@@ -48,6 +48,7 @@ class Comment(models.Model):
     text = models.TextField()
     created_at = models.DateTimeField(default=timezone.now)
     is_admin_comment = models.BooleanField(default=True)  # Add this field to mark adminsite comments
+    name = models.CharField(max_length=50)
 
     def __str__(self):
         return '{}-{}'.format(self.complaint.Subject, str(self.user.username))
