@@ -1,0 +1,15 @@
+{% extends 'admin-base.html' %}
+
+{% block content %}
+    <h1>{{ complaint.title }}</h1>
+    <p>ID: {{ complaint.id }}</p>
+    <p>User: {{ complaint.user }}</p>
+    <p>Subject: {{ complaint.subject }}</p>
+    <p>{{ complaint.Description }}</p>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Update Status</button>
+    </form>
+{% endblock %}

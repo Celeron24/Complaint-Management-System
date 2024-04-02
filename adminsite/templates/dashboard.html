@@ -1,1 +1,39 @@
-{% extends 'base.html' %}
+{% extends 'admin-base.html' %}
+
+
+{% block content %}
+    <header class="bg-dark py-1">
+        <div class="container px-2 px-lg-1 my-1">
+            <div class="text-center text-white">
+
+                <h1 class="display-4">Departments</h1>
+                <p class="lead fw-normal text-white-50 mb-0">Details below</p>
+            </div>
+        </div>
+    </header>
+    <div class="container">
+        <nav class="row">
+            <table class="table table-success table-hover table-bordered" >
+                <thead>
+                <tr class="text-center">
+                    <th scope="col">#</th>
+                    <th scope="col">Departments</th>
+                    <th scope="col">Options</th>
+                </tr>
+                </thead>
+                <tbody>
+                &nbsp;
+                {% for department in departments %}
+{#                    <a href="{% url 'department_detail' department.id %}">#}
+                    <tr class="text-center">
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td>{{ department.name }}</td>
+                        <td></td>
+                    </tr>
+{#                    </a>#}
+                {% endfor %}
+                </tbody>
+            </table>
+        </nav>
+    </div>
+{% endblock %}

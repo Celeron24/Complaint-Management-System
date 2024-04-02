@@ -1,0 +1,22 @@
+<!-- add_department.html -->
+
+{% extends 'admin-base.html' %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+        <div class="center-container">
+            <h2>Add New Department</h2>
+            <form method="post" action="{% url 'add_department' %}">
+                {% csrf_token %}
+                {{ form.as_p }}
+
+                <div id="ctr"><button type="submit" class="btn btn-secondary">Add Department</button></div>
+            </form>
+        </div>
+        &nbsp;&nbsp;&nbsp;
+
+    {% else %}
+        <h1>Access Denied</h1>
+    {% endif %}
+
+{% endblock %}
