@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import DetailView
 from Comps.forms import ComplaintForm, CommentForm
@@ -47,6 +48,7 @@ def complaint(request):
         return redirect('login.html')
 
 
+@login_required
 def home(request):
     if request.user.is_authenticated:
         default_sort_field = '-status'

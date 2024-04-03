@@ -1,8 +1,9 @@
+from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import get_object_or_404, render, redirect
 from django.utils.decorators import method_decorator
 from django.views.generic import View
 from Comps.models import Complaint
-from .forms import ComplaintStatusUpdateForm, DepartmentForm
+from .forms import ComplaintStatusUpdateForm, DepartmentForm, AddUserForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Department, CustomUser
@@ -25,13 +26,14 @@ def admin_login(request):
     return render(request, 'admin_login.html')
 
 
+@staff_member_required
 def admin_logout(request):
     logout(request)
     messages.success(request, 'Logged out successfully')
     return redirect('signIn')  # Redirect to admin login page after logout
 
 
-@login_required
+@staff_member_required
 def dashboard(request):
     departments = Department.objects.all()
     return render(request, 'dashboard.html', {'departments': departments})
@@ -41,49 +43,42 @@ def signin(request):
     return render(request, 'signIn.html', {})
 
 
-@login_required
+@staff_member_required
 def add_user(request):
     if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        designation = request.POST['designation']
-        name = request.POST['name']
-        if not CustomUser.objects.filter(username=username).exists():
-            CustomUser.objects.create_user(username=username, password=password, designation=designation, name=name)
-            messages.success(request, 'User added successfully')
-        else:
-            messages.error(request, 'Username already exists')
+        form = AddUserForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            designation = form.cleaned_data['designation']
+            name = form.cleaned_data['name']
 
-        return redirect('user_management')
-
-    return render(request, 'add_user.html')  # Create a new HTML template for adding users
-
-
-@login_required
-def user_management(request):
-    users = CustomUser.objects.all()
-
-    if request.method == 'POST':
-        if 'add_user' in request.POST:
-            username = request.POST['username']
-            password = request.POST['password']
-            designation = request.POST['designation']
-            name = request.POST['name']
             if not CustomUser.objects.filter(username=username).exists():
-                CustomUser.objects.create_user(username=username, password=password, designation=designation,
-                                         name=name,
-                                         )
+                CustomUser.objects.create_user(username=username, password=password, designation=designation, name=name)
                 messages.success(request, 'User added successfully')
             else:
                 messages.error(request, 'Username already exists')
 
-        elif 'update_user' in request.POST:
-            user_id = request.POST['user_id']
-            username = request.POST['username']
-            password = request.POST['password']
-            designation = request.POST['designation']
-            name = request.POST['name']
-            user = User.objects.get(pk=user_id)
+            return redirect('user_management')
+    else:
+        form = AddUserForm()
+    return render(request, 'add_user.html', {'form': form})
+
+
+@staff_member_required
+def user_management(request):
+    users = CustomUser.objects.all()
+
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        user_id = request.POST.get('user_id')
+
+        if action == 'update':
+            user = CustomUser.objects.get(pk=user_id)
+            username = request.POST.get('username')
+            password = request.POST.get('password')
+            designation = request.POST.get('designation')
+            name = request.POST.get('name')
             user.username = username
             user.set_password(password)
             user.designation = designation
@@ -91,8 +86,7 @@ def user_management(request):
             user.save()
             messages.success(request, 'User updated successfully')
 
-        elif 'delete_user' in request.POST:
-            user_id = request.POST['delete_user']
+        elif action == 'delete':
             user = CustomUser.objects.get(pk=user_id)
             if user.is_superuser:
                 messages.error(request, 'Cannot delete superuser')
@@ -121,7 +115,7 @@ class ComplaintDetailView(View):
         return render(request, 'complaint_detail.html', {'complaint': complaint, 'form': form})
 
 
-@login_required
+@staff_member_required
 def add_department(request):
     if request.method == 'POST':
         form = DepartmentForm(request.POST)

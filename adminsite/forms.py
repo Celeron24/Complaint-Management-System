@@ -1,6 +1,6 @@
 from Comps.models import Complaint
 from django import forms
-from .models import Department
+from .models import Department, CustomUser
 
 
 class ComplaintStatusUpdateForm(forms.ModelForm):
@@ -17,3 +17,30 @@ class DepartmentForm(forms.ModelForm):
             'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Type Department name',
                                            'style': 'margin-bottom: 10px;'}),
         }
+
+
+class AddUserForm(forms.ModelForm):
+    password_confirmation = forms.CharField(label='Confirm Password', widget=forms.PasswordInput(
+        attrs={'class': 'form-control', 'style': 'margin-bottom: 10px;'}))
+
+    class Meta:
+        model = CustomUser
+        fields = ['username', 'designation', 'name', 'password']
+        widgets = {
+            'username': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Type a unique username',
+                                               'style': 'margin-bottom: 10px;'}),
+            'designation': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'your rank',
+                                                  'style': 'margin-bottom: 10px;'}),
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'your full name',
+                                           'style': 'margin-bottom: 10px;'}),
+            'password': forms.PasswordInput(attrs={'class': 'form-control', 'style': 'margin-bottom: 10px;'}),
+        }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        password = cleaned_data.get('password')
+        password_confirmation = cleaned_data.get('password_confirmation')
+
+        if password != password_confirmation:
+            raise forms.ValidationError("The passwords do not match. Please try again.")
+        return cleaned_data
