@@ -3,6 +3,18 @@ from django import forms
 from .models import Department, CustomUser
 
 
+class UserManagementForm(forms.ModelForm):
+    class Meta:
+        model = CustomUser
+        fields = ['username', 'name', 'designation']  # Include other fields as needed
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['username'].required = False
+        self.fields['name'].required = False
+        self.fields['designation'].required = False
+
+
 class ComplaintStatusUpdateForm(forms.ModelForm):
     class Meta:
         model = Complaint

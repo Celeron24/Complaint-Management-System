@@ -1,10 +1,8 @@
-
 import os.path
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
@@ -16,7 +14,6 @@ SECRET_KEY = 'django-insecure-3d)pflbs_8s2236!ur^m+5c=z4h)31bz%q83o8)%%^gj@fn(jm
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -60,9 +57,7 @@ TEMPLATES = [
     },
 ]
 
-
 WSGI_APPLICATION = 'CMS.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
@@ -77,7 +72,6 @@ DATABASES = {
         "PORT": "3306",
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -97,7 +91,6 @@ AUTH_PASSWORD_VALIDATORS = [
     # },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
@@ -108,7 +101,6 @@ TIME_ZONE = 'Asia/Karachi'
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
@@ -127,3 +119,4 @@ SESSION_COOKIE_NAME = 'user_session_id'
 # For the admin panel
 ADMIN_SESSION_COOKIE_NAME = 'admin_session_id'
 
+AUTH_USER_MODEL = 'adminsite.CustomUser'

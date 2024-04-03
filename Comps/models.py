@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
@@ -29,7 +30,7 @@ class Complaint(models.Model):
         (1, 'Solved'),
     ]
     status = models.IntegerField(choices=status_choices, default=3)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     Comp_Assign = models.CharField(max_length=50, choices=COMP_ASSIGN_CHOICES, default='Complaint')
     Subject = models.CharField(max_length=50)
     complaint_type = models.ForeignKey(ComplaintType, on_delete=models.CASCADE, null=True)
@@ -44,7 +45,7 @@ class Complaint(models.Model):
 
 class Comment(models.Model):
     complaint = models.ForeignKey(Complaint, on_delete=models.CASCADE, related_name='comments')
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     text = models.TextField()
     created_at = models.DateTimeField(default=timezone.now)
     is_admin_comment = models.BooleanField(default=True)  # Add this field to mark adminsite comments
