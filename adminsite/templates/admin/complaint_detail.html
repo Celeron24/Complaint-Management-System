@@ -1,0 +1,39 @@
+{% extends 'admin-base.html' %}
+
+{% block content %}
+<head>
+
+    <title>Admin Complaint Detail</title>
+</head>
+<body>
+    <h1>Admin Complaint Detail</h1>
+    <div class="form-group">
+                <p><strong>ID:</strong> {{ complaint.id }}</p>
+                <p><strong>Status:</strong>
+                    {% if complaint.status == 2 %}
+                        <span class="badge text-bg-warning">InProgress</span>
+                    {% elif complaint.status == 1 %}
+                        <span class="badge text-bg-success">Solved</span>
+                    {% elif complaint.status == 3 %}
+                        <span class="badge text-bg-danger">Pending</span>
+                    {% endif %}
+                </p>
+                <p><strong>Title:</strong> {{ complaint.Subject }}</p>
+                <p><strong>Description:</strong> {{ complaint.Description }}</p>
+            </div>
+    <h3>Comments</h3>
+    <ul>
+        {% for comment in complaint.comments.all %}
+        <li>
+            {% if comment.is_admin_comment %}
+                <strong>{{ comment.name }} (Admin):</strong>
+            {% else %}
+                <strong>{{ comment.user.username }}:</strong>
+            {% endif %}
+            {{ comment.text }}
+        </li>
+        {% endfor %}
+    </ul>
+    <!-- Add form for updating status and adding comments here -->
+</body>
+{% endblock %}
