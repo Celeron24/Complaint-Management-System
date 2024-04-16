@@ -43,6 +43,7 @@ class AddUserForm(forms.ModelForm):
     class Meta:
         model = CustomUser
         fields = ['username', 'designation', 'name', 'password']
+
         widgets = {
             'username': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Type a unique username',
                                                'style': 'margin-bottom: 10px;'}),
@@ -66,3 +67,12 @@ class AddUserForm(forms.ModelForm):
         if password and password != password_confirm:
             raise forms.ValidationError("The passwords do not match. Please try again.")
         return cleaned_data
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.set_password(self.cleaned_data["password"])  # Set the password
+        if commit:
+            user.save()
+            user.department = self.cleaned_data["department"]  # Assign the selected department to the user
+            user.save()
+        return user

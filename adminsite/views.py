@@ -45,14 +45,31 @@ def signin(request):
 
 @staff_member_required
 @login_required
+def complaint_list(request):
+    complaints = Complaint.objects.all()
+    return render(request, 'admin/complaint_list.html', {'complaints': complaints})
+
+
+@staff_member_required
+@login_required
+def complaint_detail(request, pk):
+    complaint = get_object_or_404(Complaint, pk=pk)
+    # Handle updating complaint status and commenting logic here
+    return render(request, 'admin/complaint_detail.html', {'complaint': complaint})
+
+
+@staff_member_required
+@login_required
 def add_user(request):
     if request.method == 'POST':
         form = AddUserForm(request.POST)
         if form.is_valid():
             # Get the user object from the form
             user = form.save(commit=False)
-            # Hash the password before saving
-            user.password = make_password(form.cleaned_data['password'])
+            # Set the hashed password using Django's built-in method
+            user.set_password(form.cleaned_data['password'])
+            # Assign the selected department to the user
+            user.department = form.cleaned_data['department']
             user.save()
             messages.success(request, 'User added successfully')
             return redirect('dashboard')
@@ -95,5 +112,6 @@ def add_department(request):
 @login_required
 def department_detail(request, department_id):
     department = get_object_or_404(Department, pk=department_id)
-    users = CustomUser.objects.filter(department=department)
+    # Assuming department_id is an integer
+    users = CustomUser.objects.filter(department_id=department_id)
     return render(request, 'dept_detail.html', {'department': department, 'users': users})

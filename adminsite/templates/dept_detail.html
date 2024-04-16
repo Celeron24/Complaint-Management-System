@@ -2,13 +2,12 @@
 
 {% block content %}
     {% if user.is_authenticated %}
-
         <div class="container">
             <h1>{{ department.name }}</h1>
             <ul>
                 <!-- Add other department details as needed -->
             </ul>
-            <table class="table table-success table-striped">
+            <table class="table table-success table-striped table-bordered">
                 <thead>
                 <tr>
                     <th scope="col">#</th>
@@ -25,7 +24,8 @@
                         <td>{{ user.username }}</td>
                         <td>{{ user.name }}</td>
                         <td>{{ user.designation }}</td>
-                        <td><!-- Add actions here if needed --></td>
+                        <td><a href="{% url 'admin_complaint_list' %}">View Complaints</a>
+                        </td>
                     </tr>
                 {% endfor %}
                 </tbody>
@@ -35,5 +35,4 @@
     {% else %}
         <h1>You are not Logged In!</h1>
     {% endif %}
-    {{ users }}
 {% endblock %}

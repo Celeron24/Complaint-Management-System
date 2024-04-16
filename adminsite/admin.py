@@ -14,11 +14,11 @@ class CustomUserAdmin(BaseUserAdmin):
         }),
     )
     fieldsets = (
-        (None, {'fields': ('username', 'password', 'name', 'designation')}),
+        (None, {'fields': ('username', 'password', 'name', 'designation' , 'department')}),
         ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
     )
-    list_display = ('username', 'name', 'designation', 'is_active', 'is_staff', 'is_superuser')
-    search_fields = ('username', 'name', 'designation')
+    list_display = ('username', 'name', 'designation', 'department', 'is_active', 'is_staff', 'is_superuser')
+    search_fields = ('username', 'name', 'designation', 'department')
 
 
 admin.site.register(CustomUser, CustomUserAdmin)

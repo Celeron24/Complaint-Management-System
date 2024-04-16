@@ -24,13 +24,13 @@
                 <tbody>
                 &nbsp;
                 {% for department in departments %}
-{#                    <a href="{% url 'department_detail' department.id %}">#}
                     <tr class="text-center">
                         <th scope="row">{{ forloop.counter }}</th>
-                       <td><a href="{% url 'department_detail' department.id %}">{{ department.name }}</a></td>
-                        <td></td>
+                        <td><b>{{ department.name }}</b></td>
+                        <td>
+                            <a href="{% url 'department_detail' department.id %}">View</a>  <!-- View link -->
+                        </td>
                     </tr>
-{#                    </a>#}
                 {% endfor %}
                 </tbody>
             </table>
