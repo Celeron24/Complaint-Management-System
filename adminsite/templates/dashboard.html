@@ -18,7 +18,7 @@
                 <tr class="text-center">
                     <th scope="col">#</th>
                     <th scope="col">Departments</th>
-                    <th scope="col">Options</th>
+                    <th scope="col">Actions</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -27,7 +27,7 @@
 {#                    <a href="{% url 'department_detail' department.id %}">#}
                     <tr class="text-center">
                         <th scope="row">{{ forloop.counter }}</th>
-                        <td>{{ department.name }}</td>
+                       <td><a href="{% url 'department_detail' department.id %}">{{ department.name }}</a></td>
                         <td></td>
                     </tr>
 {#                    </a>#}

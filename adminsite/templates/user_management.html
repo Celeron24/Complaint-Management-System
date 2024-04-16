@@ -1,44 +1,44 @@
-{% extends 'admin-base.html' %}
-
-{% block content %}
-<div class="container mt-5">
-    <h1>User Management</h1>
-    <form method="post" action="{% url 'user_management' %}">
-        {% csrf_token %}
-        <table class="table table-success table-hover table-bordered table-striped">
-            <thead>
-                <tr class="text-center">
-                    <th scope="col">#</th>
-                    <th scope="col">Username</th>
-                    <th scope="col">Designation</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Password</th>
-                    <th scope="col">Actions</th> <!-- Added Actions column -->
-                </tr>
-            </thead>
-            <tbody>
-                {% for user in users %}
-                <tr class="text-center">
-                    <th scope="row">{{ forloop.counter }}</th>
-                    <td>{{ user.username }}</td>
-                    <td>
-                        <input type="text" class="form-control" name="designation_{{ user.id }}" value="{{ user.designation }}">
-                    </td>
-                    <td>
-                        <input type="text" class="form-control" name="name_{{ user.id }}" value="{{ user.name }}">
-                    </td>
-                    <td>
-                        <input type="password" class="form-control" name="password_{{ user.id }}">
-                    </td>
-                    <td>
-                        <input type="hidden" name="user_id" value="{{ user.id }}">
-                        <button type="submit" class="btn btn-primary" name="action" value="update">Save</button>
-                        <button type="submit" class="btn btn-danger" name="action" value="delete" onclick="return confirm('Are you sure you want to delete this user?')">Delete</button>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </form>
-</div>
-{% endblock %}
+{#{% extends 'admin-base.html' %}#}
+{##}
+{#{% block content %}#}
+{#<div class="container mt-5">#}
+{#    <h1>User Management</h1>#}
+{#    <form method="post" action="{% url 'user_management' %}">#}
+{#        {% csrf_token %}#}
+{#        <table class="table table-success table-hover table-bordered table-striped">#}
+{#            <thead>#}
+{#                <tr class="text-center">#}
+{#                    <th scope="col">#</th>#}
+{#                    <th scope="col">Username</th>#}
+{#                    <th scope="col">Designation</th>#}
+{#                    <th scope="col">Name</th>#}
+{#                    <th scope="col">Password</th>#}
+{#                    <th scope="col">Actions</th> <!-- Added Actions column -->#}
+{#                </tr>#}
+{#            </thead>#}
+{#            <tbody>#}
+{#                {% for user in users %}#}
+{#                <tr class="text-center">#}
+{#                    <th scope="row">{{ forloop.counter }}</th>#}
+{#                    <td>{{ user.username }}</td>#}
+{#                    <td>#}
+{#                        <input type="text" class="form-control" name="designation_{{ user }}" value="{{ user.designation }}">#}
+{#                    </td>#}
+{#                    <td>#}
+{#                        <input type="text" class="form-control" name="name_{{ user.id }}" value="{{ user.name }}">#}
+{#                    </td>#}
+{#                    <td>#}
+{#                        <input type="password" class="form-control" name="password_{{ user.id }}">#}
+{#                    </td>#}
+{#                    <td>#}
+{#                        <input type="hidden" name="action" value="update">#}
+{#                        <input type="hidden" name="user_id" value="{{ user.id }}">#}
+{#                        <button type="submit" class="btn btn-primary" onclick="return confirm('Are you sure you want to Update this user?')">Update</button>#}
+{#                    </td>#}
+{#                </tr>#}
+{#                {% endfor %}#}
+{#            </tbody>#}
+{#        </table>#}
+{#    </form>#}
+{#</div>#}
+{#{% endblock %}#}

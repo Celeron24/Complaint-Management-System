@@ -1,0 +1,39 @@
+{% extends 'admin-base.html' %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+
+        <div class="container">
+            <h1>{{ department.name }}</h1>
+            <ul>
+                <!-- Add other department details as needed -->
+            </ul>
+            <table class="table table-success table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Username</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Designation</th>
+                    <th scope="col">Action</th>
+                </tr>
+                </thead>
+                <tbody class="table-group-divider">
+                {% for user in users %}
+                    <tr>
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.name }}</td>
+                        <td>{{ user.designation }}</td>
+                        <td><!-- Add actions here if needed --></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <!-- Add any additional content or styling here -->
+        </div>
+    {% else %}
+        <h1>You are not Logged In!</h1>
+    {% endif %}
+    {{ users }}
+{% endblock %}

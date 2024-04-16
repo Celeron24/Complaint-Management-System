@@ -32,8 +32,13 @@ class DepartmentForm(forms.ModelForm):
 
 
 class AddUserForm(forms.ModelForm):
-    password_confirmation = forms.CharField(label='Confirm Password', widget=forms.PasswordInput(
+    password_confirm = forms.CharField(label='Confirm Password', widget=forms.PasswordInput(
         attrs={'class': 'form-control', 'style': 'margin-bottom: 10px;'}))
+
+    department = forms.ModelChoiceField(queryset=Department.objects.all(), label='Department',
+                                        empty_label="Choose Department",
+                                        widget=forms.Select(
+                                            attrs={'class': 'form-control', 'style': 'margin-bottom: 10px;'}))
 
     class Meta:
         model = CustomUser
@@ -48,11 +53,16 @@ class AddUserForm(forms.ModelForm):
             'password': forms.PasswordInput(attrs={'class': 'form-control', 'style': 'margin-bottom: 10px;'}),
         }
 
+    def __init__(self, *args, **kwargs):
+        super(AddUserForm, self).__init__(*args, **kwargs)
+        self.fields['department'].widget.attrs.update({'class': 'form-control', 'style': 'margin-bottom: 10px;'})
+        self.fields['department'].label = 'Department'
+
     def clean(self):
         cleaned_data = super().clean()
         password = cleaned_data.get('password')
-        password_confirmation = cleaned_data.get('password_confirmation')
+        password_confirm = cleaned_data.get('password_confirm')
 
-        if password != password_confirmation:
+        if password and password != password_confirm:
             raise forms.ValidationError("The passwords do not match. Please try again.")
         return cleaned_data

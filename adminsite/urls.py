@@ -25,6 +25,7 @@ urlpatterns = [
     path('adminsite/dashboard/', custom_staff_member_required(views.dashboard), name='dashboard'),
     path('adminsite/admcomplaint/<int:pk>/', ComplaintDetailView.as_view(), name='complaint_detail'),
     path('adminsite/add_dept/', custom_staff_member_required(views.add_department), name='add_department'),
-    path('adminsite/user_management/', custom_staff_member_required(views.user_management), name='user_management'),
+    # path('adminsite/user_management/', custom_staff_member_required(views.user_management), name='user_management'),
     path('adminsite/add_user/', custom_staff_member_required(views.add_user), name='add_user'),
+    path('department/<int:department_id>/', views.department_detail, name='department_detail'),
 ]
