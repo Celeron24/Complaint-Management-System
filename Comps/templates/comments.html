@@ -1,0 +1,7 @@
+{% for comment in comments %}
+    <div class="comment">
+        <strong>{{ comment.user.username }}:</strong> {{ comment.text }}
+    </div>
+{% empty %}
+    <p>No comments available.</p>
+{% endfor %}
