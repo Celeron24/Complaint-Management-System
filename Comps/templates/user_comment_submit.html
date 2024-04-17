@@ -30,7 +30,7 @@
             {% else %}
                 <strong>{{ comment.user.username }}:</strong>
             {% endif %}
-            {{ comment.text }}
+                {{ comment.text }} - {{ comment.created_at|date:"F d, Y H:i:s" }}
         </li>
         {% endfor %}
     </ul>
@@ -42,36 +42,18 @@
         <button type="submit">Submit Comment</button>
     </form>
 
-    <!-- JavaScript for AJAX and Auto-Refresh -->
+    <!-- JavaScript for AJAX -->
     <script>
         $(document).ready(function() {
-            // Function to fetch comments via AJAX
-            function fetchComments() {
-                $.ajax({
-                    type: 'GET',
-                    url: '{% url "fetch_comments" complaint.id %}', // Update with correct URL for fetching comments
-                    success: function(response) {
-                        $('#comments-section').html(response);
-                    }
-                });
-            }
-
-            // Initial fetch of comments on page load
-            fetchComments();
-
-            // Refresh comments every 10 seconds
-            setInterval(fetchComments, 10000);
-
-            // AJAX form submission for adding comments
             $('#user-comment-form').on('submit', function(event) {
                 event.preventDefault();
                 $.ajax({
                     type: 'POST',
-                    url: '{% url "user_comment_submit" complaint.id %}', // Update with correct URL for adding comments
+                    url: '{% url "user_comment_submit" complaint.id %}', // Update with correct URL
                     data: $(this).serialize(),
                     success: function(response) {
                         if (response.status === 'success') {
-                            fetchComments(); // Refresh comments after adding a new comment
+                            $('#comments-section').append('<li><strong>{{ request.user.username }}:</strong> ' + response.text + '</li>');
                             $('#id_text').val('');  // Clear the comment text input
                         }
                     }

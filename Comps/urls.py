@@ -14,6 +14,8 @@ urlpatterns = [
     # path('view_complaint/<int:pk>/', ViewComplaint.as_view(), name='view_complaint'),
     path('view_complaint/<int:pk>/', ViewComplaint.as_view(), name='view_complaint'),
     path('search/', views.your_search_view, name='search'),
+    path('user_comment_submit/<int:complaint_id>/', views.user_comment_submit, name='user_comment_submit'),
+    path('fetch_comments/<int:complaint_id>/', views.fetch_comments, name='fetch_comments'),
 ]
 
 

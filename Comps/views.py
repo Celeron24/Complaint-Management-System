@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import DetailView
 from Comps.forms import ComplaintForm, CommentForm
@@ -115,11 +116,7 @@ class ViewComplaint(DetailView):
     model = Complaint
     form_class = CommentForm
     template_name = 'view_complaint.html'
-    context_object_name = 'complaint'  # Optionally specify the context variable name
-
-    def __init__(self, **kwargs):
-        super().__init__(kwargs)
-        self.object = None
+    context_object_name = 'complaint'
 
     def get_object(self, queryset=None):
         return get_object_or_404(Complaint, pk=self.kwargs['pk'], user=self.request.user)
@@ -129,14 +126,32 @@ class ViewComplaint(DetailView):
         context['comment_form'] = self.form_class()
         return context
 
-    def post(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        form = self.form_class(request.POST)
+
+def user_comment_submit(request, complaint_id):
+    complaint = get_object_or_404(Complaint, pk=complaint_id)
+
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
         if form.is_valid():
             comment = form.save(commit=False)
-            comment.post = self.object
-            comment.name = request.user.username  # Assuming you want to save the username as the comment author
+            comment.complaint = complaint
+            comment.user = request.user
+            comment.is_admin_comment = False  # Assuming user comments are not admin comments
             comment.save()
-            return redirect('view_complaint', pk=self.object.pk)
-        else:
-            return self.render_to_response(self.get_context_data(form=form))
+            messages.success(request, 'Your comment has been submitted.')
+            return JsonResponse({'status': 'success', 'text': comment.text})
+    else:
+        form = CommentForm()
+
+    return render(request, 'view_complaint.html', {'form': form, 'complaint': complaint})
+
+
+def fetch_comments(request, complaint_id):
+    # Get the complaint object
+    complaint = get_object_or_404(Complaint, pk=complaint_id)
+    # Get comments related to the complaint
+    comments = complaint.comments.all()
+    # Render comments in a template or format as needed
+    # For simplicity, let's assume comments are rendered in a template named 'comments.html'
+    context = {'comments': comments}
+    return render(request, 'comments.html', context)

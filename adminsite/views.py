@@ -1,7 +1,10 @@
 from django.contrib.admin.views.decorators import staff_member_required
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.utils.decorators import method_decorator
 from django.views.generic import View
+
+from Comps.forms import CommentForm
 from Comps.models import Complaint
 from .forms import ComplaintStatusUpdateForm, DepartmentForm, AddUserForm
 from django.contrib.auth.decorators import login_required
@@ -54,8 +57,9 @@ def complaint_list(request):
 @login_required
 def complaint_detail(request, pk):
     complaint = get_object_or_404(Complaint, pk=pk)
-    # Handle updating complaint status and commenting logic here
-    return render(request, 'admin/complaint_detail.html', {'complaint': complaint})
+    user_comments = complaint.comments.filter(user=complaint.user)
+
+    return render(request, 'admin/complaint_detail.html', {'complaint': complaint, 'user_comments': user_comments})
 
 
 @staff_member_required
@@ -112,6 +116,36 @@ def add_department(request):
 @login_required
 def department_detail(request, department_id):
     department = get_object_or_404(Department, pk=department_id)
-    # Assuming department_id is an integer
     users = CustomUser.objects.filter(department_id=department_id)
     return render(request, 'dept_detail.html', {'department': department, 'users': users})
+
+
+@staff_member_required
+@login_required
+def admin_comment_submit(request, complaint_id):
+    complaint = get_object_or_404(Complaint, pk=complaint_id)
+    form = CommentForm(request.POST)
+    if form.is_valid():
+        comment = form.save(commit=False)
+        comment.complaint = complaint
+        comment.user = request.user  # Assuming the user is the admin
+        comment.is_admin_comment = True
+        comment.save()
+        return JsonResponse({'status': 'success', 'text': comment.text,
+                             'created_at': comment.created_at.strftime('%Y-%m-%d %H:%M:%S')
+                             })
+    else:
+        return JsonResponse({'status': 'error', 'errors': form.errors})
+
+
+@staff_member_required
+@login_required
+def fetch_comments(request, complaint_id):
+    # Get the complaint object
+    complaint = get_object_or_404(Complaint, pk=complaint_id)
+    # Get comments related to the complaint
+    comments = complaint.comments.all()
+    # Render comments in a template or format as needed
+    # For simplicity, let's assume comments are rendered in a template named 'comments.html'
+    context = {'comments': comments}
+    return render(request, 'complaint_detail.html', context)

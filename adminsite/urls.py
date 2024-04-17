@@ -30,4 +30,5 @@ urlpatterns = [
     path('department/<int:department_id>/', views.department_detail, name='department_detail'),
     path('admin/complaints/', views.complaint_list, name='admin_complaint_list'),
     path('admin/complaint/<int:pk>/', views.complaint_detail, name='admin_complaint_detail'),
+    path('admin_comment_submit/<int:complaint_id>/', views.admin_comment_submit, name='admin_comment_submit'),
 ]

@@ -47,7 +47,4 @@ class ComplaintForm(forms.ModelForm):
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
-        fields = ['name']
-        widgets = {
-            'name': forms.TextInput(attrs={'placeholder': 'Your name'}),
-        }
+        fields = ['text']
