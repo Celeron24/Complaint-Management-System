@@ -3,7 +3,6 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.utils.decorators import method_decorator
 from django.views.generic import View
-
 from Comps.forms import CommentForm
 from Comps.models import Complaint
 from .forms import ComplaintStatusUpdateForm, DepartmentForm, AddUserForm
@@ -49,17 +48,19 @@ def signin(request):
 @staff_member_required
 @login_required
 def complaint_list(request):
-    complaints = Complaint.objects.all()
-    return render(request, 'admin/complaint_list.html', {'complaints': complaints})
+    users = CustomUser.objects.all()
+    user = request.user
+    complaints = Complaint.objects.filter(user=user)
+    return render(request, 'admin/complaint_list.html', {'complaints': complaints, 'user': user, 'users': users})
 
 
 @staff_member_required
 @login_required
 def complaint_detail(request, pk):
     complaint = get_object_or_404(Complaint, pk=pk)
-    user_comments = complaint.comments.filter(user=complaint.user)
-
-    return render(request, 'admin/complaint_detail.html', {'complaint': complaint, 'user_comments': user_comments})
+    # user_comments = complaint.comments.filter(user=complaint.user)
+    # , 'user_comments': user_comments
+    return render(request, 'admin/complaint_detail.html', {'complaint': complaint})
 
 
 @staff_member_required
