@@ -45,7 +45,7 @@
                 <label for="id_text" class="form-label">Add Comment</label>
                 <textarea name="text" id="id_text" class="form-control" cols="30" rows="5"></textarea>
             </div>
-            <button type="submit" class="btn btn-primary">Submit Comment</button>
+            <button type="submit" class="btn btn-primary">Submit Comment</button> | <a href="#" onclick="confirmAndGoBack()" class="btn btn-secondary">Back</a>
         </form>
 
         <!-- Confirmation Message -->
@@ -54,10 +54,21 @@
                 Comment added successfully!
             </div>
         </div>
+    <br>
+
     </div>
 
     <!-- JavaScript for AJAX and refreshing comments -->
     <script>
+       function confirmAndGoBack() {
+    // Display a confirmation dialog box
+    var confirmation = confirm("Are you sure you want to go back?");
+
+    // If the user confirms, navigate to the previous page
+    if (confirmation) {
+        window.history.back();
+    }
+}
         $(document).ready(function() {
             // Function to fetch comments and update the comments section
             function fetchComments() {

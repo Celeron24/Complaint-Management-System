@@ -1,4 +1,6 @@
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.utils.decorators import method_decorator
@@ -47,11 +49,10 @@ def signin(request):
 
 @staff_member_required
 @login_required
-def complaint_list(request):
-    users = CustomUser.objects.all()
-    user = request.user
+def complaint_list(request, pk):
+    user = get_object_or_404(CustomUser, pk=pk)
     complaints = Complaint.objects.filter(user=user)
-    return render(request, 'admin/complaint_list.html', {'complaints': complaints, 'user': user, 'users': users})
+    return render(request, 'admin/complaint_list.html', {'complaints': complaints, 'user': user})
 
 
 @staff_member_required
@@ -116,8 +117,14 @@ def add_department(request):
 @staff_member_required
 @login_required
 def department_detail(request, department_id):
-    department = get_object_or_404(Department, pk=department_id)
-    users = CustomUser.objects.filter(department_id=department_id)
+    try:
+        department = Department.objects.get(pk=department_id)
+        users = CustomUser.objects.filter(department_id=department_id)
+    except Department.DoesNotExist:
+        messages.error(request, "Department does not exist")
+        # Redirect back to a default page or a previous page
+        return redirect('department_detail')  # Replace 'default_page_name' with your actual URL name
+
     return render(request, 'dept_detail.html', {'department': department, 'users': users})
 
 
@@ -150,3 +157,18 @@ def fetch_comments(request, complaint_id):
     # For simplicity, let's assume comments are rendered in a template named 'comments.html'
     context = {'comments': comments}
     return render(request, 'complaint_detail.html', context)
+
+
+def change_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.POST)
+        if form.is_valid():
+            user_id = form.cleaned_data['user']
+            new_password = form.cleaned_data['new_password']
+            user = CustomUser.objects.get(pk=user_id)
+            user.set_password(new_password)
+            user.save()
+            return redirect('change_password_success')
+    else:
+        form = PasswordChangeForm()
+    return render(request, 'change_password.html', {'form': form})

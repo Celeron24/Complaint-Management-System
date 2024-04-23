@@ -1,3 +1,5 @@
+from django.contrib.auth.models import User
+
 from Comps.models import Complaint
 from django import forms
 from .models import Department, CustomUser
@@ -76,3 +78,23 @@ class AddUserForm(forms.ModelForm):
             user.department = self.cleaned_data["department"]  # Assign the selected department to the user
             user.save()
         return user
+
+
+class ChangePasswordForm(forms.Form):
+    CustomUser = forms.ModelChoiceField(queryset=CustomUserUser.objects.all(), empty_label="Select a user")
+    new_password = forms.CharField(label="New Password", widget=forms.PasswordInput)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        user = cleaned_data.get('user')
+        new_password = cleaned_data.get('new_password')
+
+        # Check if the selected user exists
+        if not user:
+            raise forms.ValidationError("Please select a user.")
+
+        # Check if the new password is provided
+        if not new_password:
+            raise forms.ValidationError("Please enter a new password.")
+
+        return cleaned_data

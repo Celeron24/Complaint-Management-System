@@ -24,7 +24,8 @@
                         <td>{{ user.username }}</td>
                         <td>{{ user.name }}</td>
                         <td>{{ user.designation }}</td>
-                        <td><a href="{% url 'admin_complaint_list' %}">View Complaints</a>
+                        <td><a href="{% url 'admin_complaint_list' pk=user.pk %}">View Complaints</a>
+                            &nbsp; <a href="{% url 'admin_complaint_list' pk=user.pk %}">View Complaints</a>
                         </td>
                     </tr>
                 {% endfor %}
