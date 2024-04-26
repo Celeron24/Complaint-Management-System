@@ -81,7 +81,7 @@ class AddUserForm(forms.ModelForm):
 
 
 class ChangePasswordForm(forms.Form):
-    CustomUser = forms.ModelChoiceField(queryset=CustomUserUser.objects.all(), empty_label="Select a user")
+    CustomUser = forms.ModelChoiceField(queryset=CustomUser.objects.all(), empty_label="Select a user")
     new_password = forms.CharField(label="New Password", widget=forms.PasswordInput)
 
     def clean(self):

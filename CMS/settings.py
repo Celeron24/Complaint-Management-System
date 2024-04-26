@@ -24,10 +24,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'Comps', 'adminsite',
+
 ]
 
-STATIC_ROOT = BASE_DIR / "staticfiles"
+EXTERNAL_APPS = [
+    'Comps',
+    'adminsite',
+]
+INSTALLED_APPS += EXTERNAL_APPS
+
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -115,7 +121,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = ['static/']
-
+STATIC_ROOT = BASE_DIR / "staticfiles"
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
