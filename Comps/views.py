@@ -108,10 +108,6 @@ def solvedcomplaints(request):
         return redirect('login')
 
 
-def about(request):
-    return render(request, 'about.html')
-
-
 class ViewComplaint(DetailView):
     model = Complaint
     form_class = CommentForm

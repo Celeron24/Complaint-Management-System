@@ -10,7 +10,6 @@ urlpatterns = [
     path('logout/', views.logout_user, name='logout'),
     path('complaint/', views.complaint, name='complaint'),
     path('solved/', views.solvedcomplaints, name='solvedcomplaints'),
-    path('about/', views.about, name='about'),
     # path('view_complaint/<int:pk>/', ViewComplaint.as_view(), name='view_complaint'),
     path('view_complaint/<int:pk>/', ViewComplaint.as_view(), name='view_complaint'),
     path('search/', views.your_search_view, name='search'),

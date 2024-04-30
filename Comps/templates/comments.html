@@ -1,7 +1,31 @@
-{% for comment in comments %}
-    <div class="comment">
-        <strong>{{ comment.user.username }}:</strong> {{ comment.text }} - {{ comment.created_at }}
-    </div>
-{% empty %}
-    <p>No comments available.</p>
-{% endfor %}
+<tbody id="comments-section">
+    {% for comment in complaint.comments.all %}
+        <tr>
+            <td>
+                <span id="icon{{ comment.id }}" data-target-id="comment{{ comment.id }}" class="collapse-icon">+</span>
+                {{ comment.Subject }}
+            </td>
+            <td>
+                {% if comment.is_admin_comment %}
+                    <strong>{{ comment.name }} (Admin)</strong>
+                {% else %}
+                    <strong>{{ comment.user.username }}</strong>
+                {% endif %}
+            </td>
+            <td>{{ comment.created_at }}</td>
+        </tr>
+        <tr id="comment{{ comment.id }}" class="collapse">
+            <td colspan="3">
+                <div class="alert alert-info" role="alert">
+                    <strong>Comment:</strong> {{ comment.text }}
+                </div>
+            </td>
+        </tr>
+    {% empty %}
+        <tr>
+            <td colspan="3">
+                <p>No comments available.</p>
+            </td>
+        </tr>
+    {% endfor %}
+</tbody>
