@@ -8,41 +8,55 @@
     <h1>User Complaint Detail</h1>
     <div class="form-group">
         <p><strong>ID:</strong> {{ complaint.id }}</p>
-        <p><strong>Status:</strong>
-            {% if complaint.status == 2 %}
-                <span class="badge text-bg-warning">InProgress</span>
-            {% elif complaint.status == 1 %}
-                <span class="badge text-bg-success">Solved</span>
-            {% elif complaint.status == 3 %}
-                <span class="badge text-bg-danger">Pending</span>
-            {% endif %}
-        </p>
+        <label for="status-select"><strong>Status:</strong></label>
+        <select id="status-select">
+            <option value="1" {% if complaint.status == 1 %} selected {% endif %} style="background-color: #28a745; color: #fff;">Solved</option>
+            <option value="2" {% if complaint.status == 2 %} selected {% endif %} style="background-color: #ffc107; color: #000;">InProgress</option>
+            <option value="3" {% if complaint.status == 3 %} selected {% endif %} style="background-color: #dc3545; color: #fff;">Pending</option>
+        </select>
         <p><strong>Title:</strong> {{ complaint.Subject }}</p>
         <p><strong>Description:</strong> {{ complaint.Description }}</p>
     </div>
     <h3>Comments</h3>
-    <ul id="comments-section">
+    <div class="comments-box">
+        <ul id="comments-section" class="list-unstyled">
         {% for comment in complaint.comments.all %}
         <li>
             {% if comment.is_admin_comment %}
-                <strong>{{ comment.name }} (Admin):</strong>
+                <strong><span style="color: red;">{{ comment.name }} (Admin):</span></strong>
             {% else %}
-                <strong>{{ comment.user.username }}:</strong>
+                <strong><span style="color: blue;">{{ comment.user.username }}:</span></strong>
             {% endif %}
-            {{ comment.text }}
+            {{ comment.text }} - {{ comment.created_at }}
         </li>
+        {% empty %}
+        <p>No comments available.</p>
         {% endfor %}
-    </ul>
+        </ul>
+    </div>
 
     <!-- Comment Form for Users -->
     <form id="user-comment-form">
         {% csrf_token %}
-        <textarea name="text" id="id_text" cols="30" rows="5"></textarea>
-        <button type="submit">Submit Comment</button>
-    </form>
+       <div class="mb-3">
+                <label for="id_text" class="form-label">Add Comment</label>
+                <textarea name="text" id="id_text" class="form-control" cols="30" rows="5"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit Comment</button> | <a href="#" onclick="confirmAndGoBack()" class="btn btn-secondary">Back</a>
+        </form>
 
     <!-- JavaScript for AJAX and Auto-Refresh -->
     <script>
+        function confirmAndGoBack() {
+            // Display a confirmation dialog box
+            var confirmation = confirm("Are you sure you want to go back?");
+
+            // If the user confirms, navigate to the previous page
+            if (confirmation) {
+                window.history.back();
+            }
+        }
+
         $(document).ready(function() {
             // Function to fetch comments via AJAX
             function fetchComments() {
@@ -76,7 +90,37 @@
                     }
                 });
             });
+
+            // Handle status update
+            $('#status-select').on('change', function() {
+                var newStatus = $(this).val();
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url "complaint_status_update" complaint.id %}',
+                    data: {'status': newStatus, 'csrfmiddlewaretoken': '{{ csrf_token }}'},
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            // Optionally, you can update the status display here if needed
+                        } else {
+                            console.error('Error updating status:', response.message);
+                        }
+                    },
+                    error: function(xhr, textStatus, errorThrown) {
+                        console.error('Error updating status:', textStatus);
+                    }
+                });
+            });
         });
     </script>
+
+    <style>
+        .comments-box {
+            height: 300px; /* Set height of comments box */
+            overflow-y: auto; /* Enable vertical scrollbar when content overflows */
+            border: 1px solid #ccc; /* Add border for aesthetics */
+            padding: 10px; /* Add padding for spacing */
+            margin-bottom: 20px; /* Add margin at bottom for separation */
+        }
+    </style>
 </body>
 {% endblock %}

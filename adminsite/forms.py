@@ -81,20 +81,18 @@ class AddUserForm(forms.ModelForm):
 
 
 class ChangePasswordForm(forms.Form):
-    CustomUser = forms.ModelChoiceField(queryset=CustomUser.objects.all(), empty_label="Select a user")
     new_password = forms.CharField(label="New Password", widget=forms.PasswordInput)
+    confirm_password = forms.CharField(label="Confirm Password", widget=forms.PasswordInput)
 
     def clean(self):
         cleaned_data = super().clean()
-        user = cleaned_data.get('user')
         new_password = cleaned_data.get('new_password')
+        confirm_password = cleaned_data.get('confirm_password')
 
-        # Check if the selected user exists
-        if not user:
-            raise forms.ValidationError("Please select a user.")
-
-        # Check if the new password is provided
         if not new_password:
             raise forms.ValidationError("Please enter a new password.")
+
+        if new_password != confirm_password:
+            raise forms.ValidationError("The new password and confirm password do not match.")
 
         return cleaned_data

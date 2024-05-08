@@ -1,13 +1,13 @@
 from django.contrib.admin.views.decorators import staff_member_required
-from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render, redirect
+from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views.generic import View
 from Comps.forms import CommentForm
 from Comps.models import Complaint
-from .forms import ComplaintStatusUpdateForm, DepartmentForm, AddUserForm
+from .forms import ComplaintStatusUpdateForm, DepartmentForm, AddUserForm, ChangePasswordForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Department, CustomUser
@@ -59,9 +59,14 @@ def complaint_list(request, pk):
 @login_required
 def complaint_detail(request, pk):
     complaint = get_object_or_404(Complaint, pk=pk)
-    # user_comments = complaint.comments.filter(user=complaint.user)
-    # , 'user_comments': user_comments
-    return render(request, 'admin/complaint_detail.html', {'complaint': complaint})
+
+    # Get user's IP address
+    user_ip_address = request.META.get('REMOTE_ADDR')
+
+    return render(request, 'admin/complaint_detail.html', {
+        'complaint': complaint,
+        'user_ip_address': user_ip_address,
+    })
 
 
 @staff_member_required
@@ -159,16 +164,60 @@ def fetch_comments(request, complaint_id):
     return render(request, 'complaint_detail.html', context)
 
 
-def change_password(request):
+def change_password(request, user_id):
     if request.method == 'POST':
-        form = PasswordChangeForm(request.POST)
+        form = ChangePasswordForm(request.POST)
         if form.is_valid():
-            user_id = form.cleaned_data['user']
             new_password = form.cleaned_data['new_password']
             user = CustomUser.objects.get(pk=user_id)
             user.set_password(new_password)
             user.save()
-            return redirect('change_password_success')
+            messages.success(request, 'Password changed successfully.')
+            # Redirect back to the department detail page with the appropriate department_id
+            department_id = user.department_id
+            return redirect('department_detail', department_id=department_id)
     else:
-        form = PasswordChangeForm()
-    return render(request, 'change_password.html', {'form': form})
+        form = ChangePasswordForm()
+    return render(request, 'dept_detail.html', {'form': form})
+
+
+def complaint_status_update(request, complaint_id):
+    # Fetch the complaint object
+    complaint = get_object_or_404(Complaint, pk=complaint_id)
+
+    # Ensure that the request method is POST
+    if request.method == 'POST':
+        # Get the new status from the POST data
+        new_status = request.POST.get('status')
+
+        # Update the complaint status
+        complaint.status = new_status
+        complaint.save()
+
+        # Response data
+        response_data = {
+            'status': 'success',
+            'new_status_color': get_status_color(new_status),
+            'new_status_text_color': get_text_color(new_status)
+        }
+        return JsonResponse(response_data)
+
+
+def get_status_color(status):
+    # Function to return the background color based on the status
+    if status == '1':
+        return '#28a745'  # Solved
+    elif status == '2':
+        return '#ffc107'  # InProgress
+    elif status == '3':
+        return '#dc3545'  # Pending
+
+
+def get_text_color(status):
+    # Function to return the text color based on the status
+    if status == '1':
+        return '#fff'  # Solved
+    elif status == '2':
+        return '#000'  # InProgress
+    elif status == '3':
+        return '#fff'  # Pending

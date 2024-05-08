@@ -22,22 +22,24 @@
             <p><strong>Title:</strong> {{ complaint.Subject }}</p>
             <p><strong>Description:</strong> {{ complaint.Description }}</p>
         </div>
+     <p><strong>User IP Address:</strong> {{ user_ip_address }}</p> <!-- Display user's IP address -->
         <h3>Comments</h3>
-        <ul id="comments-section" class="list-unstyled">
-            {% for comment in complaint.comments.all %}
-            <li>
-
-                {% if comment.is_admin_comment %}
-                    <strong>{{ comment.name }} (Admin):</strong>
-                {% else %}
-                    <strong>{{ comment.user.username }}:</strong>
-                {% endif %}
-                {{ comment.text }} - {{ comment.created_at }}
-            </li>
-            {% empty %}
-            <p>No comments available.</p>
-            {% endfor %}
-        </ul>
+        <div class="comments-box">
+            <ul id="comments-section" class="list-unstyled">
+                {% for comment in complaint.comments.all %}
+                <li>
+                    {% if comment.is_admin_comment %}
+                        <strong><span style="color: red;">{{ comment.name }} (Admin):</span></strong>
+                    {% else %}
+                        <strong><span style="color: blue;">{{ comment.user.username }}:</span></strong>
+                    {% endif %}
+                    {{ comment.text }} - {{ comment.created_at }}
+                </li>
+                {% empty %}
+                <p>No comments available.</p>
+                {% endfor %}
+            </ul>
+        </div>
 
         <!-- Comment Form for Admins -->
         <form id="admin-comment-form" class="mt-3">
@@ -61,15 +63,16 @@
 
     <!-- JavaScript for AJAX and refreshing comments -->
     <script>
-       function confirmAndGoBack() {
-    // Display a confirmation dialog box
-    var confirmation = confirm("Are you sure you want to go back?");
+        function confirmAndGoBack() {
+            // Display a confirmation dialog box
+            var confirmation = confirm("Are you sure you want to go back?");
 
-    // If the user confirms, navigate to the previous page
-    if (confirmation) {
-        window.history.back();
-    }
-}
+            // If the user confirms, navigate to the previous page
+            if (confirmation) {
+                window.history.back();
+            }
+        }
+
         $(document).ready(function() {
             // Function to fetch comments and update the comments section
             function fetchComments() {
@@ -105,5 +108,15 @@
             });
         });
     </script>
+
+    <style>
+        .comments-box {
+            height: 300px; /* Set height of comments box */
+            overflow-y: auto; /* Enable vertical scrollbar when content overflows */
+            border: 1px solid #ccc; /* Add border for aesthetics */
+            padding: 10px; /* Add padding for spacing */
+            margin-bottom: 20px; /* Add margin at bottom for separation */
+        }
+    </style>
 </body>
 {% endblock %}

@@ -1,11 +1,11 @@
 {% for comment in comments %}
     <div class="comment">
         {% if comment.is_admin_comment %}
-            <strong>{{ comment.name }} (Admin):</strong>
+            <strong><span style="color: red;">{{ comment.name }} (Admin):</span></strong>
         {% else %}
-            <strong>{{ comment.user.username}}:</strong>
+            <strong><span style="color: blue;">{{ comment.user.username }}:</span></strong>
         {% endif %}
-        {{ comment.text }} - {{ comment.created_at }}
+        <b>{{ comment.text }}</b> - {{ comment.created_at }}
     </div>
 {% empty %}
     <p>No comments available.</p>

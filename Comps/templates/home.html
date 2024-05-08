@@ -84,7 +84,9 @@
                                         <span class="badge text-bg-danger">Pending</span>
                                     {% endif %}
                                 </td>
-                                <td>   <a href="{% url 'view_complaint' all.id %}">View</a></td>
+                                <td>
+                                    <a href="#" onclick="confirmAndNavigate('{% url 'view_complaint' all.id %}')">View</a>
+                                </td>
                             </tr>
 
                             </tbody>
@@ -132,17 +134,14 @@
                 {% endif %}
                 </nav>
                 </div>
-    {#        <script>#}
-    {#            document.addEventListener('DOMContentLoaded', function() {#}
-    {#                // Check if the form was already submitted#}
-    {#                if (!localStorage.getItem('sortingFormSubmitted')) {#}
-    {#                    document.getElementById('sortingForm').submit();#}
-    {#                    localStorage.setItem('sortingFormSubmitted', 'true');#}
-    {#                }#}
-    {#            });#}
-    {#        </script>#}
 
     <script>
+        function confirmAndNavigate(url) {
+            if (confirm("Are you sure you want to view this complaint/assignment?")) {
+                window.location.href = url;
+            }
+        }
+
         document.querySelectorAll('input[name="sort_by"]').forEach(function (radio) {
             radio.addEventListener('change', function () {
                 console.log("Sorting option changed");
@@ -151,8 +150,8 @@
         });
 
          // Reload the page every 10 seconds
-    setInterval(function() {
-        location.reload();
-    }, 10000);
+        setInterval(function() {
+            location.reload();
+        }, 10000);
     </script>
 {% endblock %}

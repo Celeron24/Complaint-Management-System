@@ -31,4 +31,6 @@ urlpatterns = [
     path('admin/complaint/<int:pk>/', views.complaint_list, name='admin_complaint_list'),
     path('admin/complaint/detail/<int:pk>/', views.complaint_detail, name='admin_complaint_detail'),
     path('admin_comment_submit/<int:complaint_id>/', views.admin_comment_submit, name='admin_comment_submit'),
+    path('complaint_status_update/<int:complaint_id>/', views.complaint_status_update, name='complaint_status_update'),
+    path('change_password/<int:user_id>/', views.change_password, name='change_password'),
 ]
