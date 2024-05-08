@@ -148,6 +148,6 @@ def fetch_comments(request, complaint_id):
     # Get comments related to the complaint
     comments = complaint.comments.all()
     # Render comments in a template or format as needed
-    # For simplicity, let's assume comments are rendered in a template named 'comments.html'
+    # For simplicity, let's assume comments are rendered in a template named 'bunch.html'
     context = {'comments': comments}
     return render(request, 'comments.html', context)

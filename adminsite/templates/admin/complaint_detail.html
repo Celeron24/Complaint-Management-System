@@ -3,192 +3,107 @@
 {% block content %}
 <head>
     <title>Admin Complaint Detail</title>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <!-- Font Awesome -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
-    <style>
-        .collapse-icon {
-            cursor: pointer;
-        }
-        .action-log-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-        }
-        .expand-collapse-link {
-            font-size: 12px;
-            color: #666;
-        }
-        .action-log {
-            overflow: hidden;
-            transition: height 0.3s ease;
-        }
-        .collapsed {
-            height: 50px; /* Adjust the collapsed height as needed */
-        }
-
-    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Include jQuery library -->
 </head>
 <body>
-<div class="container">
-    <h1>Admin Complaint Detail</h1>
-    <div class="form-group">
-        <p><strong>ID:</strong> {{ complaint.id }}</p>
-        <p><strong>Status:</strong>
-            {% if complaint.status == 2 %}
-                <span class="badge bg-warning text-white">InProgress</span>
-            {% elif complaint.status == 1 %}
-                <span class="badge bg-success text-white">Solved</span>
-            {% elif complaint.status == 3 %}
-                <span class="badge bg-danger text-white">Pending</span>
-            {% endif %}
-        </p>
-        <p><strong>Title:</strong> {{ complaint.Subject }}</p>
-        <p><strong>Description:</strong> {{ complaint.Description }}</p>
-    </div>
-    <h3>Comments</h3>
-
-    <!-- Comment Form for Admins -->
-    <form id="admin-comment-form" class="mt-3" method="post" action="{% url 'admin_comment_submit' complaint.id %}">
-        {% csrf_token %}
-        <div class="mb-3">
-            <label for="id_text" class="form-label">Add Comment</label>
-            <textarea name="text" id="id_text" class="form-control" cols="30" rows="5"></textarea>
+    <div class="container">
+        <h1>Admin Complaint Detail</h1>
+        <div class="form-group">
+            <p><strong>ID:</strong> {{ complaint.id }}</p>
+            <p><strong>Status:</strong>
+                {% if complaint.status == 2 %}
+                    <span class="badge bg-warning text-white">InProgress</span>
+                {% elif complaint.status == 1 %}
+                    <span class="badge bg-success text-white">Solved</span>
+                {% elif complaint.status == 3 %}
+                    <span class="badge bg-danger text-white">Pending</span>
+                {% endif %}
+            </p>
+            <p><strong>Title:</strong> {{ complaint.Subject }}</p>
+            <p><strong>Description:</strong> {{ complaint.Description }}</p>
         </div>
-        <button type="submit" class="btn btn-primary">Submit Comment</button> | <a href="#" onclick="confirmAndGoBack()" class="btn btn-secondary">Back</a>
-    </form>
+        <h3>Comments</h3>
+        <ul id="comments-section" class="list-unstyled">
+            {% for comment in complaint.comments.all %}
+            <li>
 
-    <!-- Confirmation Message -->
-    <div id="confirmation-msg" class="mt-3" style="display: none;">
-        <div class="alert alert-success" role="alert">
-            Comment added successfully!
-        </div>
-    </div>
+                {% if comment.is_admin_comment %}
+                    <strong>{{ comment.name }} (Admin):</strong>
+                {% else %}
+                    <strong>{{ comment.user.username }}:</strong>
+                {% endif %}
+                {{ comment.text }} - {{ comment.created_at }}
+            </li>
+            {% empty %}
+            <p>No comments available.</p>
+            {% endfor %}
+        </ul>
 
-    <!-- Action Log with Comment Box -->
-    <div class="card mt-5">
-        <div class="card-header action-log-header">
-            <h3 class="mb-0">Action Log</h3>
-            <div class="expand-collapse-links">
-                <span id="expand-collapse-link" class="expand-collapse-link">Collapse All</span>
+        <!-- Comment Form for Admins -->
+        <form id="admin-comment-form" class="mt-3">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="id_text" class="form-label">Add Comment</label>
+                <textarea name="text" id="id_text" class="form-control" cols="30" rows="5"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit Comment</button> | <a href="#" onclick="confirmAndGoBack()" class="btn btn-secondary">Back</a>
+        </form>
+
+        <!-- Confirmation Message -->
+        <div id="confirmation-msg" class="mt-3" style="display: none;">
+            <div class="alert alert-success" role="alert">
+                Comment added successfully!
             </div>
         </div>
-        <div class="action-log collapsed">
-            <div class="card-body">
-                <!-- Log Entries Table -->
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th scope="col">Log Entry</th>
-                        <th scope="col">Created By</th>
-                        <th scope="col">Date Time</th>
-                    </tr>
-                    </thead>
-                    <tbody id="comments-section">
-                    {% for comment in complaint.comments.all %}
-                        <tr>
-                            <td>
-                                <span id="icon{{ comment.id }}" data-target-id="comment{{ comment.id }}" class="collapse-icon">+</span>
-                                {{ complaint.Subject }}
-                            </td>
-                            <td>
-                                {% if comment.is_admin_comment %}
-                                    <strong>{{ comment.name }} (Admin)</strong>
-                                {% else %}
-                                    <strong>{{ comment.user.username }}</strong>
-                                {% endif %}
-                            </td>
-                            <td>{{ comment.created_at }}</td>
-                        </tr>
-                        <tr id="comment{{ comment.id }}" class="collapse">
-                            <td colspan="3">
-                                <div class="alert alert-info" role="alert">
-                                    <strong>Comment:</strong> {{ comment.text }}
-                                </div>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
+    <br>
+
     </div>
-</div>
 
-<!-- JavaScript for AJAX and refreshing comments -->
-<script>
-    function confirmAndGoBack() {
-        // Display a confirmation dialog box
-        var confirmation = confirm("Are you sure you want to go back?");
+    <!-- JavaScript for AJAX and refreshing comments -->
+    <script>
+       function confirmAndGoBack() {
+    // Display a confirmation dialog box
+    var confirmation = confirm("Are you sure you want to go back?");
 
-        // If the user confirms, navigate to the previous page
-        if (confirmation) {
-            window.history.back();
-        }
+    // If the user confirms, navigate to the previous page
+    if (confirmation) {
+        window.history.back();
     }
-    $(document).ready(function() {
-        // Function to fetch comments and update the comments section
-        function fetchComments() {
-            $.get('{% url "fetch_comments" complaint.id %}', function(data) {
-                $('#comments-section').html(data);
-            });
-        }
+}
+        $(document).ready(function() {
+            // Function to fetch comments and update the comments section
+            function fetchComments() {
+                $.get('{% url "fetch_comments" complaint.id %}', function(data) {
+                    $('#comments-section').html(data);
+                });
+            }
 
-        // Refresh comments every 10 seconds
-        setInterval(fetchComments, 10000);
+            // Refresh comments every 10 seconds
+            setInterval(fetchComments, 10000);
 
-        // Handle form submission for adding comments
-        $('#admin-comment-form').on('submit', function(event) {
-            event.preventDefault();
-            $.ajax({
-                type: 'POST',
-                url: '{% url "admin_comment_submit" complaint.id %}', // Update with correct URL
-                data: $(this).serialize(),
-                success: function(response) {
-                    if (response.status === 'success') {
-                        $('#comments-section').append('<tr><td><strong>{{ request.user.username }} (Admin):</strong> ' + response.text + ' - ' + response.created_at + '</td></tr>');
-                        $('#id_text').val('');  // Clear the comment text input
-                        $('#confirmation-msg').fadeIn().delay(3000).fadeOut(); // Show confirmation message for 3 seconds
-                    } else {
-                        // Handle error case
-                        console.error('Error:', response.errors);
+            // Handle form submission for adding comments
+            $('#admin-comment-form').on('submit', function(event) {
+                event.preventDefault();
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url "admin_comment_submit" complaint.id %}', // Update with correct URL
+                    data: $(this).serialize(),
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            $('#comments-section').append('<li><strong>{{ request.user.username }} (Admin):</strong> ' + response.text + ' - ' + response.created_at + '</li>');
+                            $('#id_text').val('');  // Clear the comment text input
+                            $('#confirmation-msg').fadeIn().delay(3000).fadeOut(); // Show confirmation message for 3 seconds
+                        } else {
+                            // Handle error case
+                            console.error('Error:', response.errors);
+                        }
+                    },
+                    error: function(xhr, textStatus, errorThrown) {
+                        console.error('Error:', textStatus);
                     }
-                },
-                error: function(xhr, textStatus, errorThrown) {
-                    console.error('Error:', textStatus);
-                }
+                });
             });
         });
-
-        // Toggle collapse icon on click and toggle collapse state of associated comment
-        $('.collapse-icon').click(function(event) {
-            event.stopPropagation(); // Prevent event bubbling to parent elements
-            var icon = $(this);
-            var targetId = icon.attr('data-target-id');
-            var currentState = icon.text();
-            var targetComment = $('#' + targetId);
-            if (currentState === '+') {
-                icon.text('-');
-                targetComment.collapse('show'); // Show the collapsed content
-            } else {
-                icon.text('+');
-                targetComment.collapse('hide'); // Hide the collapsed content
-            }
-        });
-
-        // Toggle action log collapse/expand when clicking on the header
-        $('.action-log-header').click(function() {
-            $('.action-log').toggleClass('collapsed');
-            var currentState = $('#expand-collapse-link').text();
-            if (currentState === 'Collapse All') {
-                $('#expand-collapse-link').text('Expand All');
-            } else {
-                $('#expand-collapse-link').text('Collapse All');
-            }
-        });
-    });
-</script>
+    </script>
 </body>
 {% endblock %}
