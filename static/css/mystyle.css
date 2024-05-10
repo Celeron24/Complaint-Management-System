@@ -1,36 +1,37 @@
 
 
-    /* for side by side radio buttons home */
-    .radio-inline label {
-        display: inline-block;
-        margin-right: 10px; /* Adjust spacing as needed */
-    }
-   h1 {
-            text-align: center;
-        }
-    /*.btn {*/
-    /*        padding: 10px 20px;*/
-    /*        font-size: 16px;*/
-    /*}*/
+/* for side by side radio buttons home */
+.radio-inline label {
+    display: inline-block;
+    margin-right: 10px; /* Adjust spacing as needed */
+}
+h1 {
+    text-align: center;
+}
+/*.btn {*/
+/*        padding: 10px 20px;*/
+/*        font-size: 16px;*/
+/*}*/
 
-     /*input {*/
-     /*       margin-bottom: 20px; !* Add some space between h1 and input *!*/
-     /*   }*/
+/*input {*/
+/*       margin-bottom: 20px; !* Add some space between h1 and input *!*/
+/*   }*/
 
-    #ctr {
+#ctr {
     justify-content: center; align-items: center; height: 10vh;
-    }
+}
 
-    #ctr-login-btn {
-        justify-content: center; align-items: center; height: 10vh;
-    }
+#ctr-login-btn {
+    justify-content: center; align-items: center; height: 10vh;
+}
 
-    .center-container {
-            text-align: center;
-    }
+.center-container {
+    text-align: center;
+}
 
-    .centered-button {
+.centered-button {
 
-            /* Additional styles for the button if needed */
-    }
+    /* Additional styles for the button if needed */
+}
+
 

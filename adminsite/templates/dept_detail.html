@@ -33,15 +33,15 @@
                     <!-- Password change form -->
                     <tr id="password-form-{{ user.pk }}" style="display: none;">
                         <td colspan="5">
-                          <form id="change-password-form-{{ user.pk }}" method="post" action="{% url 'change_password' user_id=user.pk %}">
+                            <form id="change-password-form-{{ user.pk }}" method="post" action="{% url 'change_password' user_id=user.pk %}">
                                 {% csrf_token %}
                                 <div class="mb-3">
                                     <label for="new-password-{{ user.pk }}" class="form-label">New Password:</label>
-                                    <input type="password" class="form-control" id="new-password-{{ user.pk }}" name="new_password">
+                                    <input type="password" class="form-control" id="new-password-{{ user.pk }}" name="new_password" required>
                                 </div>
                                 <div class="mb-3">
                                     <label for="confirm-password-{{ user.pk }}" class="form-label">Confirm Password:</label>
-                                    <input type="password" class="form-control" id="confirm-password-{{ user.pk }}" name="confirm_password">
+                                    <input type="password" class="form-control" id="confirm-password-{{ user.pk }}" name="confirm_password" required>
                                 </div>
                                 <button type="button" class="btn btn-primary" onclick="submitPasswordForm('{{ user.pk }}')">Submit</button>
                                 <button type="button" class="btn btn-secondary" onclick="cancelPasswordChange('{{ user.pk }}')">Cancel</button>
@@ -75,6 +75,26 @@
             // Get the new password and confirm password fields
             var newPassword = $('#new-password-' + userId).val();
             var confirmPassword = $('#confirm-password-' + userId).val();
+
+            // Check if new password matches confirm password
+            if (newPassword !== confirmPassword) {
+                alert("New password and confirm password do not match!");
+                return;
+            }
+
+            // Submit the password change form for the selected user
+            $('#change-password-form-' + userId).submit();
+        }
+        function submitPasswordForm(userId) {
+            // Get the new password and confirm password fields
+            var newPassword = $('#new-password-' + userId).val().trim();
+            var confirmPassword = $('#confirm-password-' + userId).val().trim();
+
+            // Check if new password or confirm password fields are empty
+            if (newPassword === '' || confirmPassword === '') {
+                alert("Please fill in both password fields.");
+                return;
+            }
 
             // Check if new password matches confirm password
             if (newPassword !== confirmPassword) {

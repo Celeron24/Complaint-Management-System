@@ -1,11 +1,10 @@
 {% extends 'admin-base.html' %}
+{% load static %}
 
-{#http://127.0.0.1:8000/adminsite/admin_login/ check for error-handling#}
 {% block content %}
     <header class="bg-dark py-1">
         <div class="container px-2 px-lg-1 my-1">
             <div class="text-center text-white">
-
                 <h1 class="display-4">Departments</h1>
                 <p class="lead fw-normal text-white-50 mb-0">Details below</p>
             </div>
@@ -13,20 +12,36 @@
     </header>
     <div class="container">
         <nav class="row">
-            <table class="table table-success table-hover table-bordered" >
+            <table class="table table-success table-hover table-bordered">
                 <thead>
                 <tr class="text-center">
                     <th scope="col">#</th>
-                    <th scope="col">Departments</th>
+                    <th scope="col">Department</th>
                     <th scope="col">Actions</th>
                 </tr>
                 </thead>
                 <tbody>
-                &nbsp;
                 {% for department in departments %}
                     <tr class="text-center">
                         <th scope="row">{{ forloop.counter }}</th>
-                        <td><b>{{ department.name }}</b></td>
+                        <td>
+                            <!-- Department name with edit option -->
+                            <b>{{ department.name }}</b>
+                            <img src="{% static 'svg/pen-to-square-regular.svg' %}" alt="Edit" class="edit-icon" style="width: 15px; height: 15px; cursor: pointer;" onclick="showEditForm('{{ department.id }}')">
+                           <form id="edit-form-{{ department.id }}" method="post" action="{% url 'update_department' department.id %}" onsubmit="return validateForm('{{ department.id }}');" style="display: none;">
+
+                                {% csrf_token %}
+                                <div class="input-group">
+                                    <input type="text" class="form-control" name="new_department_name" value="{{ department.name }}">
+                                    <br>
+                                    <br>
+                                    <div class="input-group mt-2">
+                                        <button type="submit" class="btn btn-primary" onclick="return confirm('Are you sure you want to save changes?')">Save</button> &nbsp;|&nbsp;
+                                        <button type="button" class="btn btn-secondary" onclick="return confirmCancel('{{ department.id }}')">Cancel</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </td>
                         <td>
                             <a href="{% url 'department_detail' department.id %}">View</a>  <!-- View link -->
                         </td>
@@ -36,4 +51,28 @@
             </table>
         </nav>
     </div>
+
+    <!-- JavaScript for showing edit form -->
+    <script>
+        function showEditForm(departmentId) {
+            $('#edit-form-' + departmentId).toggle();
+        }
+
+        function confirmCancel(departmentId) {
+            if (confirm('Are you sure you want to cancel changes?')) {
+                $('#edit-form-' + departmentId).hide();
+                return true;
+            }
+            return false;
+        }
+
+        function validateForm(departmentId) {
+            var newDepartmentName = $('#edit-form-' + departmentId + ' input[name="new_department_name"]').val();
+            if (newDepartmentName.trim() === '') {
+                alert('Department name cannot be empty');
+                return false;
+            }
+            return true;
+        }
+    </script>
 {% endblock %}

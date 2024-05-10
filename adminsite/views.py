@@ -1,4 +1,5 @@
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render, redirect
@@ -11,7 +12,7 @@ from .forms import ComplaintStatusUpdateForm, DepartmentForm, AddUserForm, Chang
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Department, CustomUser
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.hashers import make_password
 
 
@@ -133,6 +134,20 @@ def department_detail(request, department_id):
     return render(request, 'dept_detail.html', {'department': department, 'users': users})
 
 
+def update_department(request, department_id):
+    if request.method == 'POST':
+        new_name = request.POST.get('new_department_name')
+        try:
+            department = Department.objects.get(pk=department_id)
+            department.name = new_name
+            department.save()
+            messages.success(request, "Department name updated successfully")
+        except Department.DoesNotExist:
+            messages.error(request, "Department does not exist")
+    departments = Department.objects.all()
+    return render(request, 'dashboard.html', {'departments': departments})
+
+
 @staff_member_required
 @login_required
 def admin_comment_submit(request, complaint_id):
@@ -179,6 +194,22 @@ def change_password(request, user_id):
     else:
         form = ChangePasswordForm()
     return render(request, 'dept_detail.html', {'form': form})
+
+
+@login_required
+def admin_change_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Important to update the session with the new password
+            messages.success(request, 'Your password was successfully updated!')
+            return redirect('dashboard')  # Redirect to a success page, or wherever you want
+        else:
+            messages.error(request, 'Please correct the error below.')
+    else:
+        form = PasswordChangeForm(request.user)
+    return render(request, 'admin_change_password.html', {'form': form})
 
 
 def complaint_status_update(request, complaint_id):

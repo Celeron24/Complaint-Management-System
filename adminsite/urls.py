@@ -28,9 +28,11 @@ urlpatterns = [
     # path('adminsite/user_management/', custom_staff_member_required(views.user_management), name='user_management'),
     path('adminsite/add_user/', custom_staff_member_required(views.add_user), name='add_user'),
     path('department/<int:department_id>/', views.department_detail, name='department_detail'),
+    path('department/<int:department_id>/update/', views.update_department, name='update_department'),
     path('admin/complaint/<int:pk>/', views.complaint_list, name='admin_complaint_list'),
     path('admin/complaint/detail/<int:pk>/', views.complaint_detail, name='admin_complaint_detail'),
     path('admin_comment_submit/<int:complaint_id>/', views.admin_comment_submit, name='admin_comment_submit'),
     path('complaint_status_update/<int:complaint_id>/', views.complaint_status_update, name='complaint_status_update'),
     path('change_password/<int:user_id>/', views.change_password, name='change_password'),
+    path('admin_change_password/', views.admin_change_password, name='admin_change_password'),
 ]
