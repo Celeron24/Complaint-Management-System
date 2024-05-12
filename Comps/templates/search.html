@@ -28,12 +28,15 @@
                         <td>{{ complaint.assigned_employee }}</td>
                         <td>
                             {% if complaint.status == 1 %}
-                                <span class="badge text-bg-warning">InProgress</span>
-                            {% elif complaint.status == 2 %}
                                 <span class="badge text-bg-success">Solved</span>
+                            {% elif complaint.status == 2 %}
+                                <span class="badge text-bg-warning">InProgress</span>
                             {% elif complaint.status == 3 %}
                                 <span class="badge text-bg-danger">Pending</span>
                             {% endif %}
+                        </td>
+                        <td>
+                            <a href="#" onclick="confirmAndNavigate('{% url 'view_complaint' complaint.id %}')">View</a>
                         </td>
                     </tr>
                     </tbody>
@@ -45,4 +48,11 @@
         </div>
     </div>
     <br/><br/>
+    <script>
+        function confirmAndNavigate(url) {
+            if (confirm("Are you sure you want to view this complaint/assignment?")) {
+                window.location.href = url;
+            }
+        }
+    </script>
 {% endblock %}

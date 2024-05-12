@@ -1,6 +1,7 @@
 from django.contrib import admin
+
+from Comps.models import ComplaintType
 from adminsite.models import Department, CustomUser
-from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
 
@@ -30,4 +31,5 @@ class CustomUserAdmin(BaseUserAdmin):
 
 
 admin.site.register(CustomUser, CustomUserAdmin)
+admin.site.register(ComplaintType)
 # admin.site.register(Department)  # Remove this line if you're using DepartmentAdmin

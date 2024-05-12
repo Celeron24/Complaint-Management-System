@@ -1,0 +1,40 @@
+{% extends 'admin-base.html' %}
+{% load static %}
+
+{% block content %}
+    <h1>Admin Profile</h1>
+
+    <!-- Display profile form -->
+    <form method="POST">
+        {% csrf_token %}
+        UserName: {{ profile_form.username }}<br>
+        Name: {{ profile_form.name }}<br>
+        Designation: {{ profile_form.designation }}<br>
+        <button type="submit" name="profile_submit" class="btn btn-primary">Save Profile</button>
+    </form>
+    <hr><br>
+    <!-- Display password change form -->
+    <form method="POST">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="old_password" class="form-label">Enter Your Old Password:</label>
+            {{ password_form.old_password }}
+        </div>
+
+        <div class="mb-3">
+            <label for="new_password1" class="form-label">Enter Your New Password:</label>
+            {{ password_form.new_password1 }}
+        </div>
+
+        <div class="mb-3">
+            <label for="new_password2" class="form-label">Enter Your New Password (Again):</label>
+            {{ password_form.new_password2 }}
+        </div>
+        <button type="submit" name="password_submit" class="btn btn-primary">Change Password</button>
+    </form>
+
+    <br>
+    <form action="{% url 'dashboard' %}" method="GET">
+    <button type="submit" class="btn btn-secondary">Back</button>
+    </form>
+{% endblock %}

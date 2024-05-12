@@ -1,19 +1,16 @@
 from django.contrib.admin.views.decorators import staff_member_required
-from django.contrib.auth.forms import PasswordChangeForm
-from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render, redirect
-from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views.generic import View
 from Comps.forms import CommentForm
 from Comps.models import Complaint
-from .forms import ComplaintStatusUpdateForm, DepartmentForm, AddUserForm, ChangePasswordForm
+from .forms import ComplaintStatusUpdateForm, DepartmentForm, AddUserForm, ChangePasswordForm, SuperuserProfileForm, \
+    AdminsPasswordChangeForm, ComplaintTypeForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Department, CustomUser
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
-from django.contrib.auth.hashers import make_password
 
 
 def admin_login(request):
@@ -88,6 +85,39 @@ def add_user(request):
     else:
         form = AddUserForm()
     return render(request, 'add_user.html', {'form': form})
+
+
+@staff_member_required
+@login_required
+def superuser_profile(request):
+    user = request.user
+    if not user.is_authenticated:
+        return redirect('home')  # Redirect if user is not authenticated
+
+    if request.method == 'POST':
+        profile_form = SuperuserProfileForm(request.POST, instance=user)
+        password_form = AdminsPasswordChangeForm(request.user, request.POST)
+
+        if 'profile_submit' in request.POST and profile_form.is_valid():
+            user = profile_form.save(commit=False)
+            user.department = profile_form.cleaned_data['department']
+            user.save()
+            update_session_auth_hash(request, user)  # Keep user logged in
+            messages.success(request, 'Profile updated successfully.')
+            return redirect('superuser_profile')
+
+        if 'password_submit' in request.POST and password_form.is_valid():
+            user = password_form.save()
+            update_session_auth_hash(request, user)  # Keep user logged in
+            messages.success(request, 'Password changed successfully.')
+            return redirect('superuser_profile')
+
+        messages.error(request, 'Please correct the errors below.')
+    else:
+        profile_form = SuperuserProfileForm(instance=user)
+        password_form = AdminsPasswordChangeForm(request.user)
+
+    return render(request, 'superuser_profile.html', {'profile_form': profile_form, 'password_form': password_form})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -174,11 +204,13 @@ def fetch_comments(request, complaint_id):
     # Get comments related to the complaint
     comments = complaint.comments.all()
     # Render comments in a template or format as needed
-    # For simplicity, let's assume comments are rendered in a template named 'comments.html'
+    # For simplicity, let's assume comments are rendered in a template named 'bunch.html'
     context = {'comments': comments}
     return render(request, 'complaint_detail.html', context)
 
 
+@staff_member_required
+@login_required
 def change_password(request, user_id):
     if request.method == 'POST':
         form = ChangePasswordForm(request.POST)
@@ -197,21 +229,6 @@ def change_password(request, user_id):
 
 
 @login_required
-def admin_change_password(request):
-    if request.method == 'POST':
-        form = PasswordChangeForm(request.user, request.POST)
-        if form.is_valid():
-            user = form.save()
-            update_session_auth_hash(request, user)  # Important to update the session with the new password
-            messages.success(request, 'Your password was successfully updated!')
-            return redirect('dashboard')  # Redirect to a success page, or wherever you want
-        else:
-            messages.error(request, 'Please correct the error below.')
-    else:
-        form = PasswordChangeForm(request.user)
-    return render(request, 'admin_change_password.html', {'form': form})
-
-
 def complaint_status_update(request, complaint_id):
     # Fetch the complaint object
     complaint = get_object_or_404(Complaint, pk=complaint_id)
@@ -252,3 +269,16 @@ def get_text_color(status):
         return '#000'  # InProgress
     elif status == '3':
         return '#fff'  # Pending
+
+
+@staff_member_required
+@login_required
+def add_complaint_type(request):
+    if request.method == 'POST':
+        form = ComplaintTypeForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('dashboard')
+    else:
+        form = ComplaintTypeForm()
+    return render(request, 'add_complaint_type.html', {'form': form})

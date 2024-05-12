@@ -21,11 +21,6 @@
             flex-direction: column;
         }
 
-        .content {
-            flex: 1;
-            /* Add additional styling as needed */
-        }
-
         .footer {
             position: absolute;
             bottom: -70px;
@@ -38,6 +33,11 @@
             text-align: center; /* Align text to the center */
         }
     </style>
+    <script>
+        window.addEventListener('contextmenu', function (e) {
+            e.preventDefault();
+        });
+    </script>
 </head>
 <body>
 {% include 'admin-navbar.html' %}
@@ -59,9 +59,9 @@
 <br>
 <br>
 <br>
-<footer class="footer" style="font-family: 'Castoro-Italic', sans-serif;">
-    <strong>  Developed by ATO Hamza Zahir under the supervision of GM Muhammad Riaz</strong>
-</footer>
+{#<footer class="footer" style="font-family: 'Castoro-Italic', sans-serif;">#}
+{#    <strong>  Developed by ATO Hamza Zahir under the supervision of GM Muhammad Riaz</strong>#}
+{#</footer>#}
 
 <script src="{% static '/js/bootstrap.min.js' %}"></script>
 </body>

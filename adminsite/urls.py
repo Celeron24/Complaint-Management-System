@@ -14,7 +14,7 @@ def custom_staff_member_required(view_func):
             return view_func(request, *args, **kwargs)
         else:
             messages.warning(request, 'You are not allowed to access this, Unauthorized access')
-            return redirect('home')  # Replace 'another_page' with the name of your desired page
+            return redirect('home')
     return _wrapped_view
 
 
@@ -34,5 +34,6 @@ urlpatterns = [
     path('admin_comment_submit/<int:complaint_id>/', views.admin_comment_submit, name='admin_comment_submit'),
     path('complaint_status_update/<int:complaint_id>/', views.complaint_status_update, name='complaint_status_update'),
     path('change_password/<int:user_id>/', views.change_password, name='change_password'),
-    path('admin_change_password/', views.admin_change_password, name='admin_change_password'),
+    path('adminsite/super_user_profile/', views.superuser_profile, name='superuser_profile'),
+    path('adminsite/complaint-types/add/', views.add_complaint_type, name='add_complaint_type'),
 ]

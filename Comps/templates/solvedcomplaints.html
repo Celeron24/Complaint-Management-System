@@ -27,9 +27,10 @@
                         <td>{{ complaint.Subject|slice:"25" }}</td>
                         <td>{{ complaint.created_at }}</td>
                         <td> {{ complaint.assigned_employee }}</td>
-                         <td><span class="badge text-bg-success">Solved</span></td>
-
-
+                        <td><span class="badge text-bg-success">Solved</span></td>
+                        <td>
+                            <a href="#" onclick="confirmAndNavigate('{% url 'view_complaint' complaint.id %}')">View</a>
+                        </td>
                     </tr>
                     </tbody>
                 {% endfor %}
@@ -39,5 +40,11 @@
         {% endif %}
         </div>
     </div>
-
+  <script>
+        function confirmAndNavigate(url) {
+            if (confirm("Are you sure you want to view this complaint/assignment?")) {
+                window.location.href = url;
+            }
+        }
+    </script>
 {% endblock %}

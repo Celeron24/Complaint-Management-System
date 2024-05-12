@@ -73,20 +73,6 @@
 
         function submitPasswordForm(userId) {
             // Get the new password and confirm password fields
-            var newPassword = $('#new-password-' + userId).val();
-            var confirmPassword = $('#confirm-password-' + userId).val();
-
-            // Check if new password matches confirm password
-            if (newPassword !== confirmPassword) {
-                alert("New password and confirm password do not match!");
-                return;
-            }
-
-            // Submit the password change form for the selected user
-            $('#change-password-form-' + userId).submit();
-        }
-        function submitPasswordForm(userId) {
-            // Get the new password and confirm password fields
             var newPassword = $('#new-password-' + userId).val().trim();
             var confirmPassword = $('#confirm-password-' + userId).val().trim();
 

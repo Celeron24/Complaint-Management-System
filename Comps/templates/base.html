@@ -34,6 +34,11 @@
             text-align: center; /* Align text to the center */
         }
     </style>
+       <script>
+         window.addEventListener('contextmenu', function (e) {
+        e.preventDefault();
+    });
+        </script>
 </head>
 <body>
 {% include 'navbar.html'%}
@@ -50,6 +55,7 @@
         {% endfor %}
     {% endif %}
     {% block content %}
+
     {% endblock %}
 </div>
 

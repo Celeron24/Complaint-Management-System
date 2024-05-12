@@ -1,6 +1,5 @@
-from django.contrib.auth.models import User
-
-from Comps.models import Complaint
+from django.contrib.auth.forms import UserChangeForm, PasswordChangeForm
+from Comps.models import Complaint, ComplaintType
 from django import forms
 from .models import Department, CustomUser
 
@@ -49,9 +48,9 @@ class AddUserForm(forms.ModelForm):
         widgets = {
             'username': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Type a unique username',
                                                'style': 'margin-bottom: 10px;'}),
-            'designation': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'your rank',
+            'designation': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Rank',
                                                   'style': 'margin-bottom: 10px;'}),
-            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'your full name',
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Full Name',
                                            'style': 'margin-bottom: 10px;'}),
             'password': forms.PasswordInput(attrs={'class': 'form-control', 'style': 'margin-bottom: 10px;'}),
         }
@@ -80,9 +79,10 @@ class AddUserForm(forms.ModelForm):
         return user
 
 
+# for user password changing
 class ChangePasswordForm(forms.Form):
     new_password = forms.CharField(label="New Password", widget=forms.PasswordInput)
-    confirm_password = forms.CharField(label="Confirm Password", widget=forms.PasswordInput)
+    confirm_password = forms.CharField(label="Confirm New Password", widget=forms.PasswordInput)
 
     def clean(self):
         cleaned_data = super().clean()
@@ -90,9 +90,57 @@ class ChangePasswordForm(forms.Form):
         confirm_password = cleaned_data.get('confirm_password')
 
         if not new_password:
-            raise forms.ValidationError("Please enter a new password.")
+            raise forms.ValidationError("Please enter a new password.", code='invalid')
 
         if new_password != confirm_password:
-            raise forms.ValidationError("The new password and confirm password do not match.")
+            raise forms.ValidationError("The new password and confirm password do not match.", code='invalid')
 
         return cleaned_data
+
+
+class SuperuserProfileForm(UserChangeForm):
+    class Meta:
+        model = CustomUser
+        fields = ('username', 'name', 'designation')
+        widgets = {
+            'username': forms.TextInput(attrs={'class': 'form-control'}),
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'designation': forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['username'].required = True
+        self.fields['name'].required = True
+        self.fields['designation'].required = True
+
+
+class AdminsPasswordChangeForm(PasswordChangeForm):
+    class Meta:
+        model = CustomUser
+        fields = ['old_password', 'new_password1', 'new_password2']
+        widgets = {
+            'old_password1': forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Enter your Old '
+                                                                                                'Password'}),
+            'new_password1': forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Enter New Password'}),
+            'new_password2': forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Confirm New Password'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['old_password'].label = "Old Password"
+        self.fields['new_password1'].label = 'New Password'
+        self.fields['new_password2'].label = 'Confirm New Password'
+
+
+class ComplaintTypeForm(forms.ModelForm):
+    class Meta:
+        model = ComplaintType
+        fields = ['name']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter Type of Complaint'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['name'].label = "Type of Complaint"

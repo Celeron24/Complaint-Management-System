@@ -1,8 +1,16 @@
 {% extends 'base.html' %}
-
 {% block content %}
 <head>
     <title>User Complaint Detail</title>
+    <style>
+        .comments-box {
+            height: 300px; /* Set height of comments box */
+            overflow-y: auto; /* Enable vertical scrollbar when content overflows */
+            border: 1px solid #ccc; /* Add border for aesthetics */
+            padding: 10px; /* Add padding for spacing */
+            margin-bottom: 20px; /* Add margin at bottom for separation */
+        }
+    </style>
 </head>
 <body>
     <h1>User Complaint Detail</h1>
@@ -38,12 +46,12 @@
     <!-- Comment Form for Users -->
     <form id="user-comment-form">
         {% csrf_token %}
-       <div class="mb-3">
-                <label for="id_text" class="form-label">Add Comment</label>
-                <textarea name="text" id="id_text" class="form-control" cols="30" rows="5"></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Submit Comment</button> | <a href="#" onclick="confirmAndGoBack()" class="btn btn-secondary">Back</a>
-        </form>
+        <div class="mb-3">
+            <label for="id_text" class="form-label">Add Comment</label>
+            <textarea name="text" id="id_text" class="form-control" cols="30" rows="5"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit Comment</button> | <a href="#" onclick="confirmAndGoBack()" class="btn btn-secondary">Back</a>
+    </form>
 
     <!-- JavaScript for AJAX and Auto-Refresh -->
     <script>
@@ -101,6 +109,31 @@
                     success: function(response) {
                         if (response.status === 'success') {
                             // Optionally, you can update the status display here if needed
+                            if (newStatus === '1') { // Solved
+                                // Add a comment indicating complaint is solved
+                                $.ajax({
+                                    type: 'POST',
+                                    url: '{% url "user_comment_submit" complaint.id %}',
+                                    data: {'text': 'Complaint Solved', 'csrfmiddlewaretoken': '{{ csrf_token }}'},
+                                    success: function(response) {
+                                        if (response.status === 'success') {
+                                            fetchComments(); // Refresh comments after adding a new comment
+                                        }
+                                    }
+                                });
+                            } else if (newStatus === '2' || newStatus === '3') { // InProgress or Pending
+                                // Add a comment indicating complaint is reopened
+                                $.ajax({
+                                    type: 'POST',
+                                    url: '{% url "user_comment_submit" complaint.id %}',
+                                    data: {'text': 'Complaint Reopened', 'csrfmiddlewaretoken': '{{ csrf_token }}'},
+                                    success: function(response) {
+                                        if (response.status === 'success') {
+                                            fetchComments(); // Refresh comments after adding a new comment
+                                        }
+                                    }
+                                });
+                            }
                         } else {
                             console.error('Error updating status:', response.message);
                         }
@@ -112,15 +145,5 @@
             });
         });
     </script>
-
-    <style>
-        .comments-box {
-            height: 300px; /* Set height of comments box */
-            overflow-y: auto; /* Enable vertical scrollbar when content overflows */
-            border: 1px solid #ccc; /* Add border for aesthetics */
-            padding: 10px; /* Add padding for spacing */
-            margin-bottom: 20px; /* Add margin at bottom for separation */
-        }
-    </style>
 </body>
 {% endblock %}

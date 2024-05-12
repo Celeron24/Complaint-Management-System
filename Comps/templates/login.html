@@ -1,9 +1,15 @@
 {% extends 'base.html' %}
 {% block content %}
+    <script>
+        // Prevent users from going back to the previous page
+        history.pushState(null, null, location.href);
+        window.onpopstate = function () {
+            history.go(1);
+        };
+    </script>
 
     {% if user.is_authenticated %}
         <h1>You are already Logged In!</h1>
-
     {% else %}
         <div class="col-md-6 offset-md-3">
             <h1>Complaint Management System</h1>
@@ -11,23 +17,17 @@
             <br/>
             <form method="POST" action="{% url 'login' %}">
                 {% csrf_token %}
-
                 <div class="mb-3">
-
                     <input type="text" class="form-control" name="username" placeholder="Enter Your Username">
-
                 </div>
                 <div class="mb-3">
-
                     <input type="password" class="form-control" name="password" placeholder="Enter Your Password">
                 </div>
                 <br/>
                 <div class="center-container">
-                <button type="submit" class="btn btn-secondary centered-button">Login</button>
+                    <button type="submit" class="btn btn-secondary centered-button">Login</button>
                 </div>
             </form>
-
         </div>
-
     {% endif %}
 {% endblock %}
