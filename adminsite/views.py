@@ -100,7 +100,6 @@ def superuser_profile(request):
 
         if 'profile_submit' in request.POST and profile_form.is_valid():
             user = profile_form.save(commit=False)
-            user.department = profile_form.cleaned_data['department']
             user.save()
             update_session_auth_hash(request, user)  # Keep user logged in
             messages.success(request, 'Profile updated successfully.')
